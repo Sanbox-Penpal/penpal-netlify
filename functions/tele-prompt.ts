@@ -1,7 +1,11 @@
 import { TeleUpdate } from './lib/tele-types'
 import { processTeleCallback, processTeleMsg } from './lib/telegram-extension'
 import { getContentPage } from './lib/firestore-interface'
-import { embedMetadata, sendMessage } from './lib/telegram-inteface'
+import {
+  embedMetadata,
+  extractMetadata,
+  sendMessage,
+} from './lib/telegram-inteface'
 const TELE_BOT_KEY = process.env.TELE_BOT_KEY
 
 export async function handler(event, context) {
@@ -18,7 +22,6 @@ export async function handler(event, context) {
         'Sup nothing to see here',
       )
       await sendMessage(TELE_BOT_KEY, 90554672, msg)
-      console.log(test)
       break
     default:
   }

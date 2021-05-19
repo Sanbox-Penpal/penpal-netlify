@@ -328,11 +328,12 @@ export function embedMetadata(metadata: any, text: string) {
   text += `<a href="tg://metadata/${JSON.stringify(metadata)
     .split('"')
     .join("'")}/end">\u200b</a>`
-  console.log(text)
   return text
 }
 
 export function extractMetadata(htmlText: string) {
   var res = htmlText.split('tg://metadata/')[1]
+  res = res.split('/end')[0]
+  res = res.split("'").join('"')
   return JSON.parse(res.split('/end')[0])
 }
