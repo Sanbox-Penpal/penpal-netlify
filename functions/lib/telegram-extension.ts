@@ -26,8 +26,9 @@ export async function processTeleCallback(callback: TeleCallbackQuery) {
     msgText = convertToHTML(msgText, formatting)
   }
   const data = callback.data.split(CALLBACK_DELIMETER)
-  console.log(msgText)
-  console.log(formatting)
+  let x = extractMetadata(msgText)
+  console.log(x)
+  console.log(JSON.stringify(x))
   await answerCallbackQuery(BOT_KEY, callback.id, 'Thank you', false)
 }
 
@@ -76,4 +77,7 @@ function _formatText(textMsg: string, formatting: [TeleMessageEntities]) {
     textMsg = convertToHTML(textMsg, formatting)
   }
   return textMsg
+}
+function extractMetadata(msgText: string) {
+  throw new Error('Function not implemented.')
 }

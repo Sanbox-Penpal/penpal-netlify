@@ -325,13 +325,14 @@ export const cleanseString = function (string: string): string {
 }
 
 export function embedMetadata(metadata: any, text: string) {
-  text += `<a href="tg://ntelebot/${JSON.stringify(metadata)
+  text += `<a href="tg://metadata/${JSON.stringify(metadata)
     .split('"')
-    .join("'")}">\u200b</a>`
+    .join("'")}/end">\u200b</a>`
   console.log(text)
   return text
 }
 
-function extractMetadata(text: string) {
-  console.log(text)
+function extractMetadata(htmlText: string) {
+  var res = htmlText.split('tg://metadata/')[1]
+  return JSON.parse(res.split('/end')[0])
 }
