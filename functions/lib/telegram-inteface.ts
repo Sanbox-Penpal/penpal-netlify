@@ -325,7 +325,7 @@ export const cleanseString = function (string: string): string {
 }
 
 export function embedMetadata(metadata: any, text: string) {
-  text += `<a href='tg://${JSON.stringify(metadata)}'></a>`
+  text += `<a href='tg://${JSON.stringify(metadata)}'>\u200b</a>`
   return text
 }
 
