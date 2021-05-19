@@ -325,7 +325,10 @@ export const cleanseString = function (string: string): string {
 }
 
 export function embedMetadata(metadata: any, text: string) {
-  text += `<a href="tg://ntelebot/${JSON.stringify(metadata)}">\u200b</a>`
+  text += `<a href="tg://ntelebot/${JSON.stringify(metadata)
+    .split('"')
+    .join("'")}">\u200b</a>`
+  console.log(text)
   return text
 }
 
