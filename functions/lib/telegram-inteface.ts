@@ -332,7 +332,7 @@ export function embedMetadata(metadata: any, text: string) {
   return text
 }
 
-function extractMetadata(htmlText: string) {
+export function extractMetadata(htmlText: string) {
   var res = htmlText.split('tg://metadata/')[1]
   return JSON.parse(res.split('/end')[0])
 }

@@ -15,6 +15,7 @@ import {
   embedMetadata,
   genInlineButtons,
   sendMessage,
+  extractMetadata,
 } from './telegram-inteface'
 const CALLBACK_DELIMETER = '<>'
 const BOT_KEY = process.env.TELE_BOT_KEY
@@ -77,7 +78,4 @@ function _formatText(textMsg: string, formatting: [TeleMessageEntities]) {
     textMsg = convertToHTML(textMsg, formatting)
   }
   return textMsg
-}
-function extractMetadata(msgText: string) {
-  throw new Error('Function not implemented.')
 }
