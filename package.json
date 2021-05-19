@@ -1,0 +1,43 @@
+{
+  "name": "penpal_netlify",
+  "version": "1.0.0",
+  "description": "A Telegram Bot designed to facilitates SanBox's Penpal Initiative",
+  "main": "server.js",
+  "scripts": {
+    "serve": "netlify-lambda serve --config ./webpack.functions.js functions",
+    "build": "netlify-lambda build --config ./webpack.functions.js functions"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Sanbox-Penpal/penpal-netlify.git"
+  },
+  "keywords": [
+    "telegram"
+  ],
+  "author": "mudaafi",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/Sanbox-Penpal/penpal-netlify/issues"
+  },
+  "homepage": "https://github.com/Sanbox-Penpal/penpal-netlify#readme",
+  "dependencies": {
+    "@types/uuid": "^8.3.0",
+    "axios": "^0.21.1",
+    "encoding": "^0.1.13",
+    "firebase-admin": "^9.4.2",
+    "googleapis": "^67.0.0",
+    "netlify-lambda": "^2.0.2",
+    "uuid": "^8.3.2"
+  },
+  "devDependencies": {
+    "@babel/preset-typescript": "^7.13.0",
+    "@typescript-eslint/eslint-plugin": "^4.24.0",
+    "@typescript-eslint/parser": "^4.24.0",
+    "dotenv-webpack": "^6.0.0",
+    "eslint": "^7.26.0",
+    "eslint-plugin-prettier": "^3.4.0",
+    "prettier": "^2.3.0",
+    "typescript": "^4.2.4",
+    "webpack-node-externals": "^3.0.0"
+  }
+}
