@@ -9,7 +9,10 @@ import {
 
 const serviceAccount: ServiceAccount = {
   projectId: process.env.FIREBASE_PROJECT_ID,
-  privateKey: process.env.FIREBASE_PRIVATE_KEY,
+  privateKey: process.env.FIREBASE_PRIVATE_KEY.replace(
+    new RegExp('\\\\n', 'g'),
+    '\n',
+  ),
   clientEmail: process.env.FIREBASE_CLIENT_EMAIL,
 }
 // Initialize Firestore Instance

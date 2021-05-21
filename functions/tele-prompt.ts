@@ -17,11 +17,8 @@ export async function handler(event, context) {
       break
     case 'GET':
       var test = await getContentPage()
-      const msg = embedMetadata(
-        { function: 'test', hello: 123 },
-        'Sup nothing to see here',
-      )
-      await sendMessage(TELE_BOT_KEY, 90554672, msg)
+      console.log(test)
+      await sendMessage(TELE_BOT_KEY, 90554672, 'hello')
       break
     default:
   }
