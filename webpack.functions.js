@@ -1,4 +1,3 @@
-const Dotenv = require('dotenv-webpack')
 const nodeExternals = require('webpack-node-externals')
 
 // @see https://github.com/netlify/netlify-lambda#webpack-configuration
