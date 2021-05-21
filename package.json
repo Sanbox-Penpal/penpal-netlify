@@ -4,7 +4,7 @@
   "description": "A Telegram Bot designed to facilitates SanBox's Penpal Initiative",
   "main": "server.js",
   "scripts": {
-    "serve": "netlify-lambda serve --config ./webpack.functions.js functions",
+    "serve": "netlify-lambda serve --config ./localwebpack.functions.js functions",
     "build": "netlify-lambda build --config ./webpack.functions.js functions"
   },
   "repository": {
