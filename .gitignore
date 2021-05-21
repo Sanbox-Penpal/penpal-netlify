@@ -6,3 +6,9 @@ typings/
 
 # dotenv environment variables file
 .env
+
+# webpack.functions.js
+webpack.functions.js
+
+# locally built lambda functions
+lambda/
