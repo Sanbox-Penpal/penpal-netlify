@@ -1,24 +1,29 @@
 export interface User {
   id: string
   status: UserStatus
+  verifierId?: string
   name: string
   username?: string
   address?: string
   introduction?: string
-  interests?: string[]
-  hobbies?: string[]
+  interests: string[]
+  hobbies: string[]
+  programmes: string[]
   state: State
   swiperQueue: number[]
 }
 
 export enum UserStatus {
-  UNAPPROVED = 'UNAPPROVED',
+  UNAPPROVED = 'Unapproved',
+  PENDING = 'Pending',
+  APPROVED = 'Approved',
+  REJECTED = 'Rejected',
 }
 
 export interface State {
   protocol: Protocol
   stateStage: SignUpStage | string
-  stateMsgId: number
+  stateData: any
 }
 
 export interface TempMessage {
@@ -28,7 +33,7 @@ export interface TempMessage {
 }
 
 export interface ContentPage {
-  allUsers: string[]
+  admins: string[]
 }
 
 export enum Protocol {
@@ -39,14 +44,20 @@ export enum Protocol {
 
 export enum SignUpStage {
   PDPA = 'PDPA',
+  PDPA_CALLBACK = 'PDPA Verification',
   PROGRAMMES = 'Adding Programmes',
-  VERIFICATION = 'Verification',
+  VERIFICATION_REQUEST = 'Verification Request',
+  VERIFICATION_RESPONSE = 'Verification Response',
   APPROVING = 'Approval',
 }
 
 export interface SignUpStageStatics {
   PDPA: string
-  PROGRAMMES: string
+  PDPA_DECLINED: string
+  PROGRAMMES: string[]
+  ADD_PROGRAMMES: string
   VERIFICATION: string
-  APPROVING: string
+  VERIFICATION_RECEIVED: string
+  VERIFICATION_APPROVED: string
+  VERIFICATION_REJECTED: string
 }

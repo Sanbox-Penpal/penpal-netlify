@@ -7,6 +7,7 @@ import {
   TeleMessageEntities,
   TeleReplyKeyboard,
 } from './tele-types'
+import { ProtocolMetadata } from './types'
 
 const TELE_API = 'https://api.telegram.org/bot'
 
@@ -53,7 +54,7 @@ export async function answerCallbackQuery(
  */
 export async function sendMessage(
   bot_key: string,
-  chat_id: number,
+  chat_id: number | string,
   text: string,
   reply_markup:
     | TeleInlineKeyboard
@@ -174,7 +175,7 @@ export async function updateMessage(
   chat_id: number,
   msg_id: number,
   text: string,
-  reply_markup: TeleInlineKeyboard,
+  reply_markup: TeleInlineKeyboard = {} as TeleInlineKeyboard,
 ) {
   return new Promise<TeleResponse>((resolve, reject) => {
     axios
@@ -198,28 +199,69 @@ export async function updateMessage(
 /**
  * Sends a photo via the bot
  * @param bot_key string
- * @param chat_id integer
- * @param photo string url of photo
+ * @param chat_id integer | string
+ * @param photo_file_id file_id of image on Telegram Server or alternatively string url of photo (not guaranteed to work)
  * @param caption string
+ * @param reply_markup buttons
  */
 export async function sendPhoto(
   bot_key: string,
-  chat_id: number,
-  photo: string,
+  chat_id: number | string,
+  photo_file_id: string,
   caption: string,
+  reply_markup:
+    | TeleInlineKeyboard
+    | TeleReplyKeyboard = {} as TeleInlineKeyboard,
 ) {
   return new Promise<TeleResponse>((resolve, reject) => {
     axios
       .post(TELE_API + bot_key + '/sendPhoto', {
         chat_id: chat_id,
-        photo: photo,
+        photo: photo_file_id,
         caption: caption,
         parse_mode: 'HTML',
+        reply_markup: reply_markup,
       })
       .then((res) => {
         const msgDetails = res.data.result
         console.log(`Photo posted (id: ${msgDetails.message_id})`)
         resolve(res.data)
+      })
+      .catch((err) => {
+        reject(convertError(err))
+      })
+  })
+}
+
+/**
+ * Sends a document via the bot
+ * @param bot_key string
+ * @param chat_id integer | string
+ * @param document_id file_id of document on Telegram Server or alternatively url of a gif, pdf or zip file
+ * @param caption string
+ * @param reply_markup buttons
+ */
+export async function sendDocument(
+  bot_key: string,
+  id: number | string,
+  document_id: string,
+  caption: string,
+  reply_markup:
+    | TeleInlineKeyboard
+    | TeleReplyKeyboard = {} as TeleInlineKeyboard,
+) {
+  return new Promise((resolve, reject) => {
+    axios
+      .post(TELE_API + bot_key + '/sendDocument', {
+        chat_id: id,
+        document: document_id,
+        caption: caption,
+        reply_markup: reply_markup,
+      })
+      .then((res) => {
+        const msgDetails = res.data.result
+        console.log(`Document posted (id: ${msgDetails.message_id})`)
+        resolve(msgDetails)
       })
       .catch((err) => {
         reject(convertError(err))
@@ -324,15 +366,16 @@ export const cleanseString = function (string: string): string {
   return string.replace(/</g, '&lt;').replace(/>/g, '&gt;')
 }
 
-export function embedMetadata(metadata: any, text: string) {
+export function embedMetadata(metadata: ProtocolMetadata, text: string) {
   text += `<a href="tg://metadata/${JSON.stringify(metadata)
     .split('"')
     .join("'")}/end">\u200b</a>`
   return text
 }
 
-export function extractMetadata(htmlText: string) {
+export function extractMetadata(htmlText: string): ProtocolMetadata {
   var res = htmlText.split('tg://metadata/')[1]
+  if (!res) return null
   res = res.split('/end')[0]
   res = res.split("'").join('"')
   return JSON.parse(res.split('/end')[0])

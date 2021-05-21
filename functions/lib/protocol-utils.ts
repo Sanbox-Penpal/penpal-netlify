@@ -9,13 +9,16 @@ import {
 import { v4 as uuid } from 'uuid'
 
 export function createNewUser(teleId: number, name: string): User {
-  const newState = createNewState(Protocol.SIGN_UP, SignUpStage.PDPA)
+  const newState = createNewState(Protocol.SIGN_UP, SignUpStage.PDPA_CALLBACK)
   const newUser: User = {
     id: teleId.toString(),
     state: newState,
     name: name,
     status: UserStatus.UNAPPROVED,
     swiperQueue: [],
+    programmes: [],
+    hobbies: [],
+    interests: [],
   }
   return newUser
 }
@@ -27,7 +30,7 @@ export function createNewState(
   const newState: State = {
     protocol: protocol,
     stateStage: stage,
-    stateMsgId: 0,
+    stateData: null,
   }
   return newState
 }

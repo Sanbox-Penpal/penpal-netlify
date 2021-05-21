@@ -144,6 +144,11 @@ export async function getContentPage() {
   return snapshot.exists ? snapshot.data() : null
 }
 
+export async function getAdmins() {
+  const contentPage = await getContentPage()
+  return contentPage.admins
+}
+
 export function updateContentPageAllUsers(allUsers: string[]) {
   return db.contentPage.doc(CONTENT_PAGE_DB).update({ allUsers: allUsers })
 }

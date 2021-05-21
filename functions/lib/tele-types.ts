@@ -60,12 +60,13 @@ export interface TeleMessage {
   entities?: [TeleMessageEntities]
   new_chat_members?: [TeleUser]
   left_chat_member?: TeleUser
+  document?: TeleDocument
+  photo?: [TelePhotoSize]
+
   // Below are not yet used and so not implemented
   /*
   animation: TeleAnimation
   audio?: TeleAudio
-  document?: TeleDocument
-  photo?: [TelePhotoSize]
   sticker?: TeleSticker
   video?: TeleVideo
   video_note?: TeleVideoNote
@@ -203,6 +204,23 @@ export interface TeleMessageEntities {
   url?: string // Optional. For “text_link” only, url that will be opened after user taps on the text
   user?: TeleUser // Optional. For “text_mention” only, the mentioned user
   language?: string // Optional. For “pre” only, the programming language of the entity text
+}
+
+export interface TeleDocument {
+  file_id: string
+  file_unique_id: string
+  thumb?: TelePhotoSize
+  file_name?: string
+  mime_type?: string
+  file_size?: number
+}
+
+export interface TelePhotoSize {
+  file_id: string
+  file_unique_id: string
+  width: number
+  height: number
+  file_size?: number
 }
 
 export const ERROR_CODES = {
