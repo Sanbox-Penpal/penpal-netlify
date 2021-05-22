@@ -10,7 +10,8 @@ export interface User {
   hobbies: string[]
   programmes: string[]
   state: State
-  swiperQueue: number[]
+  swiperQueue: string[]
+  likedUsers: string[]
 }
 
 export enum UserStatus {
@@ -18,6 +19,7 @@ export enum UserStatus {
   PENDING = 'Pending',
   APPROVED = 'Approved',
   REJECTED = 'Rejected',
+  DELETED = 'Deleted',
 }
 
 export interface State {
@@ -34,11 +36,13 @@ export interface TempMessage {
 
 export interface ContentPage {
   admins: string[]
+  allUsers: string[]
 }
 
 export enum Protocol {
   SIGN_UP = 'Signing up',
   TINDER = 'Match Making',
+  GIFT = 'Gifting',
 }
 
 export enum SignUpStage {
@@ -64,10 +68,16 @@ export interface SignUpStageStatics {
 export enum TinderStage {
   INITIALIZE = 'INITIALIZE',
   SWIPE = 'SWIPE',
-  END = 'END',
 }
 
 export interface TinderStageStatics {
   NOT_CLEARED: string
   NO_LONGER_CLEARED: string
+  SWIPE_CARD: string
+  COMPLETED: string
+  MATCH: string
+}
+
+export enum GiftStage {
+  INITIALIZE = 'INITIALIZE',
 }

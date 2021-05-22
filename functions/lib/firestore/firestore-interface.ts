@@ -152,6 +152,11 @@ export async function getAdmins() {
   return contentPage.admins
 }
 
+export async function getAllUsers() {
+  const contentPage = await getContentPage()
+  return contentPage.allUsers
+}
+
 export function updateContentPageAllUsers(allUsers: string[]) {
   return db.contentPage.doc(CONTENT_PAGE_DB).update({ allUsers: allUsers })
 }

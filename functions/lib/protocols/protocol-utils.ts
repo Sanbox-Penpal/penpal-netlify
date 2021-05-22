@@ -14,6 +14,7 @@ export function createNewUser(teleId: number, name: string): User {
     name: name,
     status: UserStatus.UNAPPROVED,
     swiperQueue: [],
+    likedUsers: [],
     programmes: [],
     hobbies: [],
     interests: [],

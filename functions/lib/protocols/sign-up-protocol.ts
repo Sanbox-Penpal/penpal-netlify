@@ -192,7 +192,14 @@ async function _verificationCallback(
 ) {
   let msgText = formatTeleTextToHtml(msg.text, msg.entities)
 
-  if (unverifiedUser.status != UserStatus.PENDING) {
+  if (unverifiedUser.status == UserStatus.DELETED) {
+    return updateMessage(
+      BOT_KEY,
+      msg.chat.id,
+      msg.message_id,
+      msgText + 'The user has withdrawn his application',
+    )
+  } else if (unverifiedUser.status != UserStatus.PENDING) {
     let admin = await getUser(unverifiedUser.verifierId)
     return updateMessage(
       BOT_KEY,
@@ -202,18 +209,6 @@ async function _verificationCallback(
         `This user has already been ${unverifiedUser.status} by @${
           admin != null ? admin.username : 'unknown'
         }`,
-    )
-  }
-
-  if (
-    unverifiedUser.state.protocol != Protocol.SIGN_UP ||
-    unverifiedUser.state.stateStage != SignUpStage.VERIFICATION_RESPONSE
-  ) {
-    return updateMessage(
-      BOT_KEY,
-      msg.chat.id,
-      msg.message_id,
-      msgText + 'The user has withdrawn his application',
     )
   }
 

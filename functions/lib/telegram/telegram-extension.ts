@@ -1,9 +1,10 @@
 /* This js file is an extension to the multi-purpose telegram_interface js file
  * meant for this bot in particular */
 import { getUser } from '../firestore/firestore-interface'
-import { Protocol, User } from '../firestore/firestore-types'
-import { createNewUser } from '../protocols/protocol-utils'
+import { Protocol, TinderStage, User } from '../firestore/firestore-types'
+import { createNewState, createNewUser } from '../protocols/protocol-utils'
 import { signUpProtocol } from '../protocols/sign-up-protocol'
+import { tinderProtocol } from '../protocols/tinder-protocol'
 import {
   TeleCallbackQuery,
   TeleInlineKeyboard,
@@ -42,6 +43,7 @@ export async function processTeleMsg(message: TeleMessage) {
     case Protocol.SIGN_UP:
       return signUpProtocol(message.from, user, message)
     case Protocol.TINDER:
+      break
     default:
   }
 }
@@ -62,6 +64,8 @@ export async function processTeleCallback(callback: TeleCallbackQuery) {
       )
   } else {
     user = await getUser(metadata.referencedUser)
+    user.state.protocol = metadata.protocol
+    user.state.stateStage = metadata.stage
     user.state.stateData = metadata.data
   }
 
@@ -71,6 +75,7 @@ export async function processTeleCallback(callback: TeleCallbackQuery) {
     case Protocol.SIGN_UP:
       return signUpProtocol(callback.from, user, callback.message, data)
     case Protocol.TINDER:
+      return tinderProtocol(user, callback.message, callback.id, data)
     default:
   }
 
@@ -102,6 +107,10 @@ async function _runCommand(htmlMsg: string, message: TeleMessage) {
       message.from.first_name,
     )
     return signUpProtocol(message.from, newUser, message)
+  } else if (_identifyCommand('/find_penpal', htmlMsg)) {
+    let user = await getUser(message.from.id.toString())
+    user.state = createNewState(Protocol.TINDER, TinderStage.INITIALIZE)
+    return tinderProtocol(user, message)
   } else if (_identifyCommand('/identify', htmlMsg)) {
     // Identifying chat Id
     return sendMsg(message.chat.id, message.chat.id.toString())
