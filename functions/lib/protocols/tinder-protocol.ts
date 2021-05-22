@@ -3,6 +3,7 @@ import {
   getStatics,
   getUser,
   updateUser,
+  updateUserState,
 } from '../firestore/firestore-interface'
 import {
   GiftStage,
@@ -83,6 +84,7 @@ async function _swipeCallback(
       }
       let msgTextSelf = fillUserFields(user, msgs.MATCH)
       msgTextSelf = embedMetadata(selfMetadata, msgTextSelf)
+      await updateUserState(user.id, null)
       await updateMessage(BOT_KEY, user.id, msgId, msgTextSelf, proceedBtn)
 
       const matchedMetadata: ProtocolMetadata = {
@@ -97,6 +99,7 @@ async function _swipeCallback(
     case 'Swipe No':
       return _sendRandomCard(msgs, user, msgId)
     case 'Swipe Done':
+      updateUserState(user.id, null)
       return updateMessage(BOT_KEY, user.id, msgId, msgs.COMPLETED)
     default:
   }
