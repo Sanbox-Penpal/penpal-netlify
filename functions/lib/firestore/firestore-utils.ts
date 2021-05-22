@@ -38,6 +38,7 @@ const db = {
   contentPage: dataPoint<ContentPage>(CONTENT_PAGE_DB),
   statics: dataPoint<any>(STATICS_DB),
   default: admin.firestore(),
+  admin: admin,
 }
 
 export { db }

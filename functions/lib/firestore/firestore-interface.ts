@@ -157,6 +157,18 @@ export async function getAllUsers() {
   return contentPage.allUsers
 }
 
+export async function recordVerifiedUser(userId: string) {
+  return db.contentPage.doc(CONTENT_PAGE_DB).update({
+    allUsers: db.admin.firestore.FieldValue.arrayUnion(userId),
+  })
+}
+
+export async function removeVerifiedUser(userId: string) {
+  return db.contentPage.doc(CONTENT_PAGE_DB).update({
+    allUsers: db.admin.firestore.FieldValue.arrayRemove(userId),
+  })
+}
+
 export function updateContentPageAllUsers(allUsers: string[]) {
   return db.contentPage.doc(CONTENT_PAGE_DB).update({ allUsers: allUsers })
 }

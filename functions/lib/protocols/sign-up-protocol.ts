@@ -23,6 +23,7 @@ import {
   getAdmins,
   getStatics,
   getUser,
+  recordVerifiedUser,
   registerUser,
   updateUser,
   updateUserProgrammes,
@@ -217,6 +218,7 @@ async function _verificationCallback(
     unverifiedUser.status = UserStatus.APPROVED
     unverifiedUser.verifierId = verifier.id.toString()
     msgText += `\n\n<b>Approved by: @${verifier.username}</b>`
+    await recordVerifiedUser(unverifiedUser.id)
     await sendMsg(unverifiedUser.id, msgs.VERIFICATION_APPROVED)
   } else if (decision == 'Reject') {
     unverifiedUser.status = UserStatus.REJECTED
