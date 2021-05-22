@@ -1,7 +1,8 @@
 /* This js file is an extension to the multi-purpose telegram_interface js file
  * meant for this bot in particular */
-import { getUserState } from '../firestore/firestore-interface'
-import { Protocol, SignUpStage, State } from '../firestore/firestore-types'
+import { getUser } from '../firestore/firestore-interface'
+import { Protocol, User } from '../firestore/firestore-types'
+import { createNewUser } from '../protocols/protocol-utils'
 import { signUpProtocol } from '../protocols/sign-up-protocol'
 import {
   TeleCallbackQuery,
@@ -35,12 +36,11 @@ export async function processTeleMsg(message: TeleMessage) {
   }
 
   // Plain Text
-  const userState = await getUserState(message.from.id.toString())
-  if (!userState) return
-  switch (userState.protocol) {
+  const user = await getUser(message.from.id.toString())
+  if (!user || !user.state) return
+  switch (user.state.protocol) {
     case Protocol.SIGN_UP:
-      return signUpProtocol(message.from, userState, message)
-    case Protocol.VERIFY:
+      return signUpProtocol(message.from, user, message)
     case Protocol.TINDER:
     default:
   }
@@ -50,25 +50,26 @@ export async function processTeleCallback(callback: TeleCallbackQuery) {
   const metadata = extractMetadata(
     formatTeleTextToHtml(callback.message.text, callback.message.entities),
   )
-  let state: State
-  if (!metadata) {
-    state = await getUserState(callback.from.id.toString())
-    if (!state)
-      return answerCallbackQuery(BOT_KEY, callback.id, 'Incorrect state', false)
+  let user: User
+  if (!metadata || !metadata.referencedUser) {
+    user = await getUser(callback.from.id.toString())
+    if (!user)
+      return answerCallbackQuery(
+        BOT_KEY,
+        callback.id,
+        'Referenced User not found',
+        false,
+      )
   } else {
-    state = {
-      protocol: metadata.protocol,
-      stateStage: metadata.stage,
-      stateData: metadata.data,
-    }
+    user = await getUser(metadata.referencedUser)
+    user.state.stateData = metadata.data
   }
 
   const data = callback.data ? callback.data.split(CALLBACK_DELIMETER) : null
 
-  switch (state.protocol) {
+  switch (user.state.protocol) {
     case Protocol.SIGN_UP:
-      return signUpProtocol(callback.from, state, callback.message, data)
-    case Protocol.VERIFY:
+      return signUpProtocol(callback.from, user, callback.message, data)
     case Protocol.TINDER:
     default:
   }
@@ -96,12 +97,11 @@ async function _runCommand(htmlMsg: string, message: TeleMessage) {
     _identifyCommand('/start', htmlMsg) ||
     _identifyCommand('/register', htmlMsg)
   ) {
-    const newSignUpState: State = {
-      protocol: Protocol.SIGN_UP,
-      stateStage: SignUpStage.PDPA,
-      stateData: null,
-    }
-    return signUpProtocol(message.from, newSignUpState, message)
+    const newUser: User = createNewUser(
+      message.from.id,
+      message.from.first_name,
+    )
+    return signUpProtocol(message.from, newUser, message)
   } else if (_identifyCommand('/identify', htmlMsg)) {
     // Identifying chat Id
     return sendMsg(message.chat.id, message.chat.id.toString())

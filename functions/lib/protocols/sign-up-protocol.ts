@@ -11,19 +11,17 @@ import {
   informAdmins,
 } from '../telegram/telegram-extension'
 import {
-  State,
   User,
   Protocol,
   SignUpStage,
   SignUpStageStatics,
   UserStatus,
 } from '../firestore/firestore-types'
-import { createNewUser } from './protocol-utils'
 import { TeleMessage, TeleUser } from '../telegram/tele-types'
 import { ProtocolMetadata } from './types'
 import {
   getAdmins,
-  getStaticMSgs,
+  getStatics,
   getUser,
   registerUser,
   updateUser,
@@ -34,41 +32,41 @@ import {
 const BOT_KEY = process.env.TELE_BOT_KEY
 
 export async function signUpProtocol(
-  user: TeleUser,
-  state: State,
+  teleUser: TeleUser,
+  user: User,
   msg: TeleMessage,
   callbackData?: string[],
 ) {
+  const state = user.state
   const msgText = formatTeleTextToHtml(msg.text, msg.entities)
   const msgId = msg.message_id
-  const msgs = await getStaticMSgs(Protocol.SIGN_UP)
+  const msgs = await getStatics.sign_up
   switch (state.stateStage) {
     case SignUpStage.PDPA:
       return _pdpaStage(msgs, user)
     case SignUpStage.PDPA_CALLBACK:
-      return _pdpaCallback(msgs, state, user, msgId, msgText, callbackData)
+      return _pdpaCallback(msgs, user, msgId, msgText, callbackData)
     case SignUpStage.PROGRAMMES:
       return _addProgrammesCallback(msgs, user, msgId, msgText, callbackData)
     case SignUpStage.VERIFICATION_REQUEST:
       return _verificationReply(msgs, user, msg)
     case SignUpStage.VERIFICATION_RESPONSE:
-      return _verificationCallback(msgs, user, msg, state, callbackData)
+      return _verificationCallback(msgs, user, teleUser, msg, callbackData)
     default:
   }
 }
 
-async function _pdpaStage(msgs: SignUpStageStatics, user: TeleUser) {
-  const newUser: User = createNewUser(user.id, user.first_name)
+async function _pdpaStage(msgs: SignUpStageStatics, newUser: User) {
+  newUser.state.stateStage = SignUpStage.PDPA_CALLBACK
   let msgText = msgs.PDPA
   const btns = genInlineButtons([['Accept', 'Decline']], [`Accept`, `Decline`])
   await registerUser(newUser)
-  return sendMsg(user.id, msgText, btns)
+  return sendMsg(newUser.id, msgText, btns)
 }
 
 async function _pdpaCallback(
   msgs: SignUpStageStatics,
-  state: State,
-  user: TeleUser,
+  user: User,
   msgId: number,
   msgText: string,
   callbackData: string[],
@@ -77,8 +75,8 @@ async function _pdpaCallback(
   if (choice == 'Accept') {
     msgText += '\n\nYou have <b>accepted</b> the agreement'
     await updateMessage(BOT_KEY, user.id, msgId, msgText)
-    state.stateStage = SignUpStage.PROGRAMMES
-    await updateUserState(user.id.toString(), state)
+    user.state.stateStage = SignUpStage.PROGRAMMES
+    await updateUserState(user.id.toString(), user.state)
     const btns = genInlineButtons(
       [msgs.PROGRAMMES],
       msgs.PROGRAMMES.map((val, index) => index.toString()),
@@ -91,21 +89,20 @@ async function _pdpaCallback(
 
 async function _addProgrammesCallback(
   msgs: SignUpStageStatics,
-  teleUser: TeleUser,
+  user: User,
   msgId: number,
   msgText: string,
   callbackData: string[],
 ) {
-  let user = await getUser(teleUser.id.toString())
   const programmes = msgs.PROGRAMMES
   const selectedProgrammeIndex = parseInt(callbackData[0])
   const selectedProgramme = programmes[selectedProgrammeIndex]
 
   if (selectedProgramme == 'Done') {
-    await updateMessage(BOT_KEY, teleUser.id, msgId, msgText)
+    await updateMessage(BOT_KEY, user.id, msgId, msgText)
     user.state.stateStage = SignUpStage.VERIFICATION_REQUEST
     await updateUserState(user.id, user.state)
-    return await sendMsg(teleUser.id, msgs.VERIFICATION)
+    return sendMsg(user.id, msgs.VERIFICATION)
   }
 
   if (selectedProgramme == 'Clear') {
@@ -124,19 +121,19 @@ async function _addProgrammesCallback(
     [msgs.PROGRAMMES],
     msgs.PROGRAMMES.map((val, index) => index.toString()),
   )
-  return updateMessage(BOT_KEY, teleUser.id, msgId, msgText, btns)
+  return updateMessage(BOT_KEY, user.id, msgId, msgText, btns)
 }
 
 async function _verificationReply(
   msgs: SignUpStageStatics,
-  user: TeleUser,
+  user: User,
   msg: TeleMessage,
 ) {
   if (!msg.document && !msg.photo) return sendMsg(user.id, msgs.VERIFICATION)
   await sendMsg(user.id, msgs.VERIFICATION_RECEIVED)
-  await updateUserStatus(user.id.toString(), UserStatus.PENDING)
+  await updateUserStatus(user.id, UserStatus.PENDING)
 
-  const unverifiedUser = await getUser(user.id.toString())
+  const unverifiedUser = await getUser(user.id)
   const admins = await getAdmins()
   if (unverifiedUser == null)
     return informAdmins(
@@ -157,6 +154,7 @@ async function _verificationReply(
   const metadata: ProtocolMetadata = {
     protocol: Protocol.SIGN_UP,
     stage: SignUpStage.VERIFICATION_RESPONSE,
+    referencedUser: unverifiedUser.id,
     data: unverifiedUser.id,
   }
   adminMsg = embedMetadata(metadata, adminMsg)
@@ -187,13 +185,11 @@ async function _verificationReply(
 
 async function _verificationCallback(
   msgs: SignUpStageStatics,
-  user: TeleUser,
+  unverifiedUser: User,
+  verifier: TeleUser,
   msg: TeleMessage,
-  state: State,
   callbackData: string[],
 ) {
-  const unverifiedUserId: string = state.stateData
-  let unverifiedUser = await getUser(unverifiedUserId)
   let msgText = formatTeleTextToHtml(msg.text, msg.entities)
 
   if (unverifiedUser.status != UserStatus.PENDING) {
@@ -224,13 +220,13 @@ async function _verificationCallback(
   const decision = callbackData[0]
   if (decision == 'Accept') {
     unverifiedUser.status = UserStatus.APPROVED
-    unverifiedUser.verifierId = user.id.toString()
-    msgText += `\n\n<b>Approved by: @${user.username}</b>`
+    unverifiedUser.verifierId = verifier.id.toString()
+    msgText += `\n\n<b>Approved by: @${verifier.username}</b>`
     await sendMsg(unverifiedUser.id, msgs.VERIFICATION_APPROVED)
   } else if (decision == 'Reject') {
     unverifiedUser.status = UserStatus.REJECTED
-    unverifiedUser.verifierId = user.id.toString()
-    msgText += `\n\n<b>Rejected by: @${user.username}</b>`
+    unverifiedUser.verifierId = verifier.id.toString()
+    msgText += `\n\n<b>Rejected by: @${verifier.username}</b>`
     await sendMsg(unverifiedUser.id, msgs.VERIFICATION_REJECTED)
   }
   unverifiedUser.state = null

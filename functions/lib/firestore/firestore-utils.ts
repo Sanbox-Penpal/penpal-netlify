@@ -1,10 +1,5 @@
 import admin, { ServiceAccount } from 'firebase-admin'
-import {
-  ContentPage,
-  SignUpStageStatics,
-  TempMessage,
-  User,
-} from './firestore-types'
+import { ContentPage, TempMessage, User } from './firestore-types'
 
 const serviceAccount: ServiceAccount = {
   projectId: process.env.FIREBASE_PROJECT_ID,
@@ -41,7 +36,7 @@ const db = {
   users: dataPoint<User>(USER_DB),
   tempMsgs: dataPoint<TempMessage>(TEMP_DB),
   contentPage: dataPoint<ContentPage>(CONTENT_PAGE_DB),
-  statics: dataPoint<SignUpStageStatics | any>(STATICS_DB),
+  statics: dataPoint<any>(STATICS_DB),
   default: admin.firestore(),
 }
 

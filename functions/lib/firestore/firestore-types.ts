@@ -38,7 +38,6 @@ export interface ContentPage {
 
 export enum Protocol {
   SIGN_UP = 'Signing up',
-  VERIFY = 'Verification',
   TINDER = 'Match Making',
 }
 
@@ -60,4 +59,15 @@ export interface SignUpStageStatics {
   VERIFICATION_RECEIVED: string
   VERIFICATION_APPROVED: string
   VERIFICATION_REJECTED: string
+}
+
+export enum TinderStage {
+  INITIALIZE = 'INITIALIZE',
+  SWIPE = 'SWIPE',
+  END = 'END',
+}
+
+export interface TinderStageStatics {
+  NOT_CLEARED: string
+  NO_LONGER_CLEARED: string
 }

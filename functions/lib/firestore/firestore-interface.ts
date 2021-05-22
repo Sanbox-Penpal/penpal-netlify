@@ -3,23 +3,26 @@ import {
   SignUpStageStatics,
   State,
   TempMessage,
+  TinderStageStatics,
   User,
   UserStatus,
 } from './firestore-types'
 import { CONTENT_PAGE_DB, db } from './firestore-utils'
 
 // Get Statics
-export async function getStaticMSgs(protocol: Protocol) {
+async function getStaticMsgsWrapper(protocol: Protocol) {
   const snapshot = await db.statics.doc(protocol).get()
   if (!snapshot.exists) return
-  switch (protocol) {
-    case Protocol.SIGN_UP:
-      return snapshot.data() as SignUpStageStatics
-    case Protocol.VERIFY:
-    case Protocol.TINDER:
-    default:
-      return
-  }
+  return snapshot.data()
+}
+
+// Creates a function that obtains the corresponding DB while generically setting types via the converter
+const staticsConverter = <T>(protocol: Protocol) =>
+  getStaticMsgsWrapper(protocol) as Promise<T>
+
+export const getStatics = {
+  sign_up: staticsConverter<SignUpStageStatics>(Protocol.SIGN_UP),
+  tinder: staticsConverter<TinderStageStatics>(Protocol.TINDER),
 }
 
 // <-- User Related Services -->

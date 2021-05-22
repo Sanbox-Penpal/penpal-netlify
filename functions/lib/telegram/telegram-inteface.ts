@@ -165,14 +165,14 @@ export function genInlineUrlButtons(
 /**
  * Updates a message
  * @param bot_key string
- * @param chat_id integer
+ * @param chat_id integer | string
  * @param msg_id integer
  * @param text string
  * @param reply_markup Telegram Object
  */
 export async function updateMessage(
   bot_key: string,
-  chat_id: number,
+  chat_id: number | string,
   msg_id: number,
   text: string,
   reply_markup: TeleInlineKeyboard = {} as TeleInlineKeyboard,
