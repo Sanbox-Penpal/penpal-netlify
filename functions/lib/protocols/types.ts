@@ -1,4 +1,4 @@
-import { Protocol, SignUpStage } from './firestore-types'
+import { Protocol, SignUpStage } from '../firestore/firestore-types'
 
 export interface ProtocolMetadata {
   protocol: Protocol

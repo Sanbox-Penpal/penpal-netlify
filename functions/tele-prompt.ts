@@ -1,11 +1,10 @@
-import { TeleUpdate } from './lib/tele-types'
-import { processTeleCallback, processTeleMsg } from './lib/telegram-extension'
-import { getContentPage } from './lib/firestore-interface'
+import { TeleUpdate } from './lib/telegram/tele-types'
 import {
-  embedMetadata,
-  extractMetadata,
-  sendMessage,
-} from './lib/telegram-inteface'
+  processTeleCallback,
+  processTeleMsg,
+} from './lib/telegram/telegram-extension'
+import { getContentPage } from './lib/firestore/firestore-interface'
+import { sendMessage } from './lib/telegram/telegram-inteface'
 const TELE_BOT_KEY = process.env.TELE_BOT_KEY
 
 export async function handler(event, context) {

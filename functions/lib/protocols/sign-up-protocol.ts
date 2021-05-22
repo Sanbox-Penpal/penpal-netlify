@@ -4,12 +4,12 @@ import {
   sendDocument,
   sendPhoto,
   updateMessage,
-} from './telegram-inteface'
+} from '../telegram/telegram-inteface'
 import {
   sendMsg,
   formatTeleTextToHtml,
   informAdmins,
-} from './telegram-extension'
+} from '../telegram/telegram-extension'
 import {
   State,
   User,
@@ -17,9 +17,9 @@ import {
   SignUpStage,
   SignUpStageStatics,
   UserStatus,
-} from './firestore-types'
+} from '../firestore/firestore-types'
 import { createNewUser } from './protocol-utils'
-import { TeleMessage, TeleUser } from './tele-types'
+import { TeleMessage, TeleUser } from '../telegram/tele-types'
 import { ProtocolMetadata } from './types'
 import {
   getAdmins,
@@ -30,17 +30,8 @@ import {
   updateUserProgrammes,
   updateUserState,
   updateUserStatus,
-} from './firestore-interface'
+} from '../firestore/firestore-interface'
 const BOT_KEY = process.env.TELE_BOT_KEY
-
-async function _defaultResponse(chatId: number, protocol: Protocol) {
-  const btns = genInlineButtons([['Reset']], ['resetStage'])
-  return sendMsg(
-    chatId,
-    `Hmm you're currently in the middle of ${protocol}. Would you like to reset?`,
-    btns,
-  )
-}
 
 export async function signUpProtocol(
   user: TeleUser,

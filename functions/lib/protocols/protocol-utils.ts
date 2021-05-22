@@ -4,7 +4,7 @@ import {
   State,
   SignUpStage,
   UserStatus,
-} from './firestore-types'
+} from '../firestore/firestore-types'
 
 import { v4 as uuid } from 'uuid'
 

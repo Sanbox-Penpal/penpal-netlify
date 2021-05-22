@@ -7,7 +7,7 @@ import {
   TeleMessageEntities,
   TeleReplyKeyboard,
 } from './tele-types'
-import { ProtocolMetadata } from './types'
+import { ProtocolMetadata } from '../protocols/types'
 
 const TELE_API = 'https://api.telegram.org/bot'
 

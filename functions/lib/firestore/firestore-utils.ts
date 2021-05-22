@@ -1,7 +1,6 @@
 import admin, { ServiceAccount } from 'firebase-admin'
 import {
   ContentPage,
-  Protocol,
   SignUpStageStatics,
   TempMessage,
   User,

@@ -1,8 +1,8 @@
 /* This js file is an extension to the multi-purpose telegram_interface js file
  * meant for this bot in particular */
-import { getUserState } from './firestore-interface'
-import { Protocol, SignUpStage, State } from './firestore-types'
-import { signUpProtocol } from './protocols'
+import { getUserState } from '../firestore/firestore-interface'
+import { Protocol, SignUpStage, State } from '../firestore/firestore-types'
+import { signUpProtocol } from '../protocols/sign-up-protocol'
 import {
   TeleCallbackQuery,
   TeleInlineKeyboard,
