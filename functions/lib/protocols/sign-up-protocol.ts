@@ -41,10 +41,12 @@ export async function signUpProtocol(
   callbackId?: string,
   callbackData?: string[],
 ) {
+  const msgs = await getStatics.sign_up
+  if (_bounceUser(msgs, user)) return
+
   const state = user.state
   const msgText = formatTeleTextToHtml(msg.text, msg.entities)
   const msgId = msg.message_id
-  const msgs = await getStatics.sign_up
   switch (state.stateStage) {
     case SignUpStage.PDPA:
       return _pdpaStage(msgs, user)
@@ -64,6 +66,22 @@ export async function signUpProtocol(
     case SignUpStage.VERIFICATION_RESPONSE:
       return _verificationCallback(msgs, user, teleUser, msg, callbackData)
     default:
+  }
+}
+
+async function _bounceUser(msgs: SignUpStageStatics, user: User) {
+  switch (user.status) {
+    case UserStatus.PENDING:
+      await sendMsg(user.id, msgs.BOUNCE_PENDING)
+      return true
+    case UserStatus.APPROVED:
+      await sendMsg(user.id, msgs.BOUNCE_ACCEPTED)
+      return true
+    case UserStatus.REJECTED:
+      await sendMsg(user.id, msgs.BOUNCE_REJECTED)
+      return true
+    default:
+      return false
   }
 }
 

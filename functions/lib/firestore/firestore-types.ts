@@ -67,6 +67,9 @@ export interface SignUpStageStatics extends GeneralStaticDocument {
   VERIFICATION_RECEIVED: string
   VERIFICATION_APPROVED: string
   VERIFICATION_REJECTED: string
+  BOUNCE_REJECTED: string
+  BOUNCE_PENDING: string
+  BOUNCE_ACCEPTED: string
 }
 
 export enum TinderStage {

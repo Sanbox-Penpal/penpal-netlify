@@ -103,11 +103,13 @@ async function _runCommand(htmlMsg: string, message: TeleMessage) {
     _identifyCommand('/start', htmlMsg) ||
     _identifyCommand('/register', htmlMsg)
   ) {
-    const newUser: User = createNewUser(
-      message.from.id,
-      message.from.first_name,
-      message.from.username,
-    )
+    let newUser = await getUser(message.from.id.toString())
+    if (!newUser)
+      newUser = createNewUser(
+        message.from.id,
+        message.from.first_name,
+        message.from.username,
+      )
     return signUpProtocol(message.from, newUser, message)
   } else if (_identifyCommand('/find_penpal', htmlMsg)) {
     let user = await getUser(message.from.id.toString())
