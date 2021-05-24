@@ -47,6 +47,8 @@ export enum Protocol {
   PROFILE = 'Profile',
 }
 
+export type GeneralStaticDocument = { [key: string]: string | string[] }
+
 export enum SignUpStage {
   PDPA = 'PDPA',
   PDPA_CALLBACK = 'PDPA Verification',
@@ -56,7 +58,7 @@ export enum SignUpStage {
   APPROVING = 'Approval',
 }
 
-export interface SignUpStageStatics {
+export interface SignUpStageStatics extends GeneralStaticDocument {
   PDPA: string
   PDPA_DECLINED: string
   PROGRAMMES: string[]
@@ -72,7 +74,7 @@ export enum TinderStage {
   SWIPE = 'SWIPE',
 }
 
-export interface TinderStageStatics {
+export interface TinderStageStatics extends GeneralStaticDocument {
   NOT_CLEARED: string
   NO_LONGER_CLEARED: string
   SWIPE_CARD: string
@@ -84,14 +86,14 @@ export enum GiftStage {
   INITIALIZE = 'INITIALIZE',
 }
 
-export interface GiftStageStatics {}
+export interface GiftStageStatics extends GeneralStaticDocument {}
 
 export enum DeregisterStage {
   INITIALIZE = 'INITIALIZE',
   RESPONSE = 'RESPONSE',
 }
 
-export interface DeregisterStageStatics {
+export interface DeregisterStageStatics extends GeneralStaticDocument {
   REQUEST_CONFIRMATION: string
   CONFIRM_DELETE: string
   ABORT_DELETE: string
@@ -104,7 +106,7 @@ export enum ProfileStage {
   HOBBIES = 'Setting Hobbies',
 }
 
-export interface ProfileStageStatics {
+export interface ProfileStageStatics extends GeneralStaticDocument {
   NOT_CLEARED: string
   TEMPLATE: string
   INTRODUCTION: string

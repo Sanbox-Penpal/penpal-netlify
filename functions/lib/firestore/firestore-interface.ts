@@ -8,6 +8,7 @@ import {
   TinderStageStatics,
   User,
   UserStatus,
+  GeneralStaticDocument,
 } from './firestore-types'
 import { CONTENT_PAGE_DB, db } from './firestore-utils'
 
@@ -15,12 +16,22 @@ import { CONTENT_PAGE_DB, db } from './firestore-utils'
 async function getStaticMsgsWrapper(protocol: Protocol) {
   const snapshot = await db.statics.doc(protocol).get()
   if (!snapshot.exists) return
-  return snapshot.data()
+  let obj = snapshot.data() as GeneralStaticDocument
+  Object.keys(obj).forEach((key) => {
+    let value = obj[key]
+    if (typeof value == 'string') {
+      obj[key] = value.replace(/\\n/g, '\n')
+    } else {
+      obj[key] = value.map((arrVal) => arrVal.replace(/\\n/g, 's'))
+    }
+  })
+  return obj
 }
 
 // Creates a function that obtains the corresponding DB while generically setting types via the converter
-const staticsConverter = <T>(protocol: Protocol) =>
-  getStaticMsgsWrapper(protocol) as Promise<T>
+const staticsConverter = <T extends GeneralStaticDocument>(
+  protocol: Protocol,
+) => getStaticMsgsWrapper(protocol) as Promise<T>
 
 export const getStatics = {
   sign_up: staticsConverter<SignUpStageStatics>(Protocol.SIGN_UP),

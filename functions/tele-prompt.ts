@@ -3,7 +3,7 @@ import {
   processTeleCallback,
   processTeleMsg,
 } from './lib/telegram/telegram-extension'
-import { getContentPage } from './lib/firestore/firestore-interface'
+import { getStatics } from './lib/firestore/firestore-interface'
 import { sendMessage } from './lib/telegram/telegram-inteface'
 const TELE_BOT_KEY = process.env.TELE_BOT_KEY
 
@@ -15,9 +15,8 @@ export async function handler(event, context) {
       await processTelePrompt(prompt)
       break
     case 'GET':
-      var test = await getContentPage()
-      console.log(test)
-      await sendMessage(TELE_BOT_KEY, 90554672, 'hello')
+      var test = await getStatics.sign_up
+      await sendMessage(TELE_BOT_KEY, 90554672, test.PDPA)
       break
     default:
   }
