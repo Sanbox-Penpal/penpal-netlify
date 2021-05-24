@@ -192,18 +192,12 @@ async function _verificationReply(
       await sendDocument(
         BOT_KEY,
         admin,
-        msg.document.file_unique_id,
+        msg.document.file_id,
         adminMsg,
         adminBtns,
       )
     } else if (msg.photo) {
-      await sendPhoto(
-        BOT_KEY,
-        admin,
-        msg.photo[0].file_unique_id,
-        adminMsg,
-        adminBtns,
-      )
+      await sendPhoto(BOT_KEY, admin, msg.photo[0].file_id, adminMsg, adminBtns)
     }
   }
 }
