@@ -111,14 +111,13 @@ async function _runCommand(htmlMsg: string, message: TeleMessage) {
   ) {
     let newUser = await getUser(message.from.id.toString())
     if (newUser) {
-      if (bounceUser(newUser)) return
-    } else {
-      newUser = createNewUser(
-        message.from.id,
-        message.from.first_name,
-        message.from.username,
-      )
+      if (await bounceUser(newUser)) return
     }
+    newUser = createNewUser(
+      message.from.id,
+      message.from.first_name,
+      message.from.username,
+    )
     return signUpProtocol(message.from, newUser, message)
   } else if (_identifyCommand('/find_penpal', htmlMsg)) {
     let user = await getUser(message.from.id.toString())
