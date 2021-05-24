@@ -84,6 +84,7 @@ async function _pdpaCallback(
     )
     return sendMsg(user.id, msgs.ADD_PROGRAMMES, btns)
   } else {
+    await updateUserState(user.id.toString(), null)
     await updateMessage(BOT_KEY, user.id, msgId, msgs.PDPA_DECLINED)
   }
 }
