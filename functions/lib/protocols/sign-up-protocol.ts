@@ -42,7 +42,7 @@ export async function signUpProtocol(
   callbackData?: string[],
 ) {
   const msgs = await getStatics.sign_up
-  if (_bounceUser(msgs, user)) return
+  if (await _bounceUser(msgs, user)) return
 
   const state = user.state
   const msgText = formatTeleTextToHtml(msg.text, msg.entities)
@@ -72,8 +72,11 @@ export async function signUpProtocol(
 async function _bounceUser(msgs: SignUpStageStatics, user: User) {
   switch (user.status) {
     case UserStatus.PENDING:
-      await sendMsg(user.id, msgs.BOUNCE_PENDING)
-      return true
+      if (user.state.stateStage == SignUpStage.VERIFICATION_REQUEST) {
+        await sendMsg(user.id, msgs.BOUNCE_PENDING)
+        return true
+      }
+      return false
     case UserStatus.APPROVED:
       await sendMsg(user.id, msgs.BOUNCE_ACCEPTED)
       return true
