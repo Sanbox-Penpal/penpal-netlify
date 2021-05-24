@@ -1,4 +1,5 @@
 import {
+  answerCallbackQuery,
   embedMetadata,
   genInlineButtons,
   sendDocument,
@@ -36,6 +37,7 @@ export async function signUpProtocol(
   teleUser: TeleUser,
   user: User,
   msg: TeleMessage,
+  callbackId?: string,
   callbackData?: string[],
 ) {
   const state = user.state
@@ -48,7 +50,14 @@ export async function signUpProtocol(
     case SignUpStage.PDPA_CALLBACK:
       return _pdpaCallback(msgs, user, msgId, msgText, callbackData)
     case SignUpStage.PROGRAMMES:
-      return _addProgrammesCallback(msgs, user, msgId, msgText, callbackData)
+      return _addProgrammesCallback(
+        msgs,
+        user,
+        msgId,
+        msgText,
+        callbackId,
+        callbackData,
+      )
     case SignUpStage.VERIFICATION_REQUEST:
       return _verificationReply(msgs, user, msg)
     case SignUpStage.VERIFICATION_RESPONSE:
@@ -94,6 +103,7 @@ async function _addProgrammesCallback(
   user: User,
   msgId: number,
   msgText: string,
+  callbackId: string,
   callbackData: string[],
 ) {
   const programmes = msgs.PROGRAMMES
@@ -109,12 +119,25 @@ async function _addProgrammesCallback(
 
   if (selectedProgramme == 'Clear') {
     user.programmes = []
+    answerCallbackQuery(BOT_KEY, callbackId, 'Programmes Cleared', false)
   } else if (user.programmes.includes(selectedProgramme)) {
     user.programmes = user.programmes.filter(
       (elem) => elem != selectedProgramme,
     )
+    answerCallbackQuery(
+      BOT_KEY,
+      callbackId,
+      `${selectedProgramme} removed`,
+      false,
+    )
   } else {
     user.programmes.push(selectedProgramme)
+    answerCallbackQuery(
+      BOT_KEY,
+      callbackId,
+      `${selectedProgramme} added`,
+      false,
+    )
   }
   await updateUserProgrammes(user.id, user.programmes)
   msgText = msgs.ADD_PROGRAMMES

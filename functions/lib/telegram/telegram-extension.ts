@@ -69,13 +69,14 @@ export async function processTeleCallback(callback: TeleCallbackQuery) {
     user.state.stateData = metadata.data
   }
 
+  const msg = callback.message
   const data = callback.data ? callback.data.split(CALLBACK_DELIMETER) : null
 
   switch (user.state.protocol) {
     case Protocol.SIGN_UP:
-      return signUpProtocol(callback.from, user, callback.message, data)
+      return signUpProtocol(callback.from, user, msg, callback.id, data)
     case Protocol.TINDER:
-      return tinderProtocol(user, callback.message, callback.id, data)
+      return tinderProtocol(user, msg, callback.id, data)
     default:
   }
 
