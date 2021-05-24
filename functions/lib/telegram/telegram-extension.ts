@@ -143,7 +143,7 @@ async function bounceUser(user: User) {
   const msgs = await getStatics.sign_up
   switch (user.status) {
     case UserStatus.PENDING:
-      if (user.state.stateStage == SignUpStage.VERIFICATION_REQUEST) {
+      if (user.state.stateStage == SignUpStage.VERIFICATION_RESPONSE) {
         await sendMsg(user.id, msgs.BOUNCE_PENDING)
         return true
       }
