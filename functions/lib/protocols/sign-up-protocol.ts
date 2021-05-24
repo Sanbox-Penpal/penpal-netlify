@@ -18,6 +18,7 @@ import {
   SignUpStage,
   SignUpStageStatics,
   UserStatus,
+  ProfileStage,
 } from '../firestore/firestore-types'
 import { TeleMessage, TeleUser } from '../telegram/tele-types'
 import { ProtocolMetadata } from './types'
@@ -238,7 +239,16 @@ async function _verificationCallback(
     unverifiedUser.verifierId = verifier.id.toString()
     msgText += `\n\n<b>Approved by: @${verifier.username}</b>`
     await recordVerifiedUser(unverifiedUser.id)
-    await sendMsg(unverifiedUser.id, msgs.VERIFICATION_APPROVED)
+    const metadata: ProtocolMetadata = {
+      protocol: Protocol.PROFILE,
+      stage: ProfileStage.INITIALIZE,
+    }
+    const btns = genInlineButtons([['Set up my profile!']], ['Profile'])
+    await sendMsg(
+      unverifiedUser.id,
+      embedMetadata(metadata, msgs.VERIFICATION_APPROVED),
+      btns,
+    )
   } else if (decision == 'Reject') {
     unverifiedUser.status = UserStatus.REJECTED
     unverifiedUser.verifierId = verifier.id.toString()
