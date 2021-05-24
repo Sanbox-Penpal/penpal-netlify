@@ -37,7 +37,7 @@ export async function profileProtocol(
     return _processButtonPress(msgs, user, msg, callbackId, callbackData)
   switch (user.state.stateStage) {
     case ProfileStage.INITIALIZE:
-      return _initiailize(msgs, user)
+      return _initiailize(msgs, user, msg.message_id, callbackId)
     case ProfileStage.INTRODUTION:
       return _introductionReply(msgs, user, msg)
     case ProfileStage.HOBBIES:
@@ -48,12 +48,18 @@ export async function profileProtocol(
   }
 }
 
-async function _initiailize(msgs: ProfileStageStatics, user: User) {
+async function _initiailize(
+  msgs: ProfileStageStatics,
+  user: User,
+  msgId: number,
+  callbackId?: string,
+) {
   user.state = createNewState(Protocol.PROFILE, ProfileStage.INTRODUTION)
   await updateUserState(user.id, user.state)
   let textMsg = _updateTemplate(msgs.TEMPLATE, user)
   textMsg += `\n\n\n${msgs.INTRODUCTION}`
   const btn = genInlineButtons([['Clear', 'Next']], ['Clear', 'Next'])
+  if (callbackId) return updateMessage(BOT_KEY, user.id, msgId, textMsg, btn)
   return sendMsg(user.id, textMsg, btn)
 }
 

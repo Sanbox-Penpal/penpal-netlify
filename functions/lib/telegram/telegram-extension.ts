@@ -2,12 +2,16 @@
  * meant for this bot in particular */
 import { getStatics, getUser } from '../firestore/firestore-interface'
 import {
+  DeregisterStage,
+  ProfileStage,
   Protocol,
   SignUpStage,
   TinderStage,
   User,
   UserStatus,
 } from '../firestore/firestore-types'
+import { deregisterProtocol } from '../protocols/deregister-protocol'
+import { profileProtocol } from '../protocols/profile-protocol'
 import { createNewState, createNewUser } from '../protocols/protocol-utils'
 import { signUpProtocol } from '../protocols/sign-up-protocol'
 import { tinderProtocol } from '../protocols/tinder-protocol'
@@ -48,6 +52,8 @@ export async function processTeleMsg(message: TeleMessage) {
   switch (user.state.protocol) {
     case Protocol.SIGN_UP:
       return signUpProtocol(message.from, user, message)
+    case Protocol.PROFILE:
+      return profileProtocol(user, message)
     case Protocol.TINDER:
       break
     default:
@@ -81,8 +87,12 @@ export async function processTeleCallback(callback: TeleCallbackQuery) {
   switch (user.state.protocol) {
     case Protocol.SIGN_UP:
       return signUpProtocol(callback.from, user, msg, callback.id, data)
+    case Protocol.PROFILE:
+      return profileProtocol(user, msg, callback.id, data)
     case Protocol.TINDER:
       return tinderProtocol(user, msg, callback.id, data)
+    case Protocol.DEREGISTER:
+      return deregisterProtocol(user, msg, callback.id, data)
     default:
   }
 
@@ -105,6 +115,7 @@ async function _runCommand(htmlMsg: string, message: TeleMessage) {
     )
   }
   // Command List
+  // -- Register
   if (
     _identifyCommand('/start', htmlMsg) ||
     _identifyCommand('/register', htmlMsg)
@@ -119,10 +130,28 @@ async function _runCommand(htmlMsg: string, message: TeleMessage) {
       message.from.username,
     )
     return signUpProtocol(message.from, newUser, message)
+    // -- Profile
+  } else if (_identifyCommand('/profile', htmlMsg)) {
+    let user = await getUser(message.from.id.toString())
+    if (!user || user.status != UserStatus.APPROVED)
+      return sendMsg(message.from.id, 'You are not registered with Sanbox yet.')
+    user.state = createNewState(Protocol.PROFILE, ProfileStage.INITIALIZE)
+    return profileProtocol(user, message)
+    // -- Tinder
   } else if (_identifyCommand('/find_penpal', htmlMsg)) {
     let user = await getUser(message.from.id.toString())
+    if (!user || user.status != UserStatus.APPROVED)
+      return sendMsg(message.from.id, 'You are not registered with Sanbox yet.')
     user.state = createNewState(Protocol.TINDER, TinderStage.INITIALIZE)
     return tinderProtocol(user, message)
+    // -- Deregister
+  } else if (_identifyCommand('/deregister', htmlMsg)) {
+    let user = await getUser(message.from.id.toString())
+    if (!user)
+      return sendMsg(message.from.id, 'You are not registered with Sanbox yet.')
+    user.state = createNewState(Protocol.DEREGISTER, DeregisterStage.INITIALIZE)
+    return deregisterProtocol(user, message)
+    //
   } else if (_identifyCommand('/identify', htmlMsg)) {
     // Identifying chat Id
     return sendMsg(message.chat.id, message.chat.id.toString())
