@@ -130,6 +130,7 @@ export function genInlineButtons(
     }
     result.push(rowArr)
   }
+  if (result.length == 0) return {} as TeleInlineKeyboard
   return { inline_keyboard: result } as TeleInlineKeyboard
 }
 

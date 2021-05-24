@@ -27,9 +27,13 @@ export async function handler(event, context) {
   }
 }
 async function processTelePrompt(prompt: TeleUpdate) {
-  if (prompt.message) {
-    await processTeleMsg(prompt.message)
-  } else if (prompt.callback_query) {
-    await processTeleCallback(prompt.callback_query)
+  try {
+    if (prompt.message) {
+      await processTeleMsg(prompt.message)
+    } else if (prompt.callback_query) {
+      await processTeleCallback(prompt.callback_query)
+    }
+  } catch (e) {
+    console.log(e)
   }
 }

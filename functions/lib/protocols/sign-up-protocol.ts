@@ -79,7 +79,7 @@ async function _pdpaCallback(
     user.state.stateStage = SignUpStage.PROGRAMMES
     await updateUserState(user.id.toString(), user.state)
     const btns = genInlineButtons(
-      [msgs.PROGRAMMES],
+      msgs.PROGRAMMES.map((prog) => [prog]),
       msgs.PROGRAMMES.map((val, index) => index.toString()),
     )
     return sendMsg(user.id, msgs.ADD_PROGRAMMES, btns)
@@ -119,8 +119,8 @@ async function _addProgrammesCallback(
   msgText = msgs.ADD_PROGRAMMES
   user.programmes.forEach((p) => (msgText += ` - ${p}\n`))
   const btns = genInlineButtons(
-    [msgs.PROGRAMMES],
-    msgs.PROGRAMMES.map((val, index) => index.toString()),
+    programmes.map((prog) => [prog]),
+    programmes.map((val, index) => index.toString()),
   )
   return updateMessage(BOT_KEY, user.id, msgId, msgText, btns)
 }
