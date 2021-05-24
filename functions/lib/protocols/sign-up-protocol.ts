@@ -110,7 +110,7 @@ async function _addProgrammesCallback(
     user.programmes = []
   } else if (user.programmes.includes(selectedProgramme)) {
     user.programmes = user.programmes.filter(
-      (elem) => elem == selectedProgramme,
+      (elem) => elem != selectedProgramme,
     )
   } else {
     user.programmes.push(selectedProgramme)
