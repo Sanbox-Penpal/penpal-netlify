@@ -1,7 +1,13 @@
 /* This js file is an extension to the multi-purpose telegram_interface js file
  * meant for this bot in particular */
-import { getUser } from '../firestore/firestore-interface'
-import { Protocol, TinderStage, User } from '../firestore/firestore-types'
+import { getStatics, getUser } from '../firestore/firestore-interface'
+import {
+  Protocol,
+  SignUpStage,
+  TinderStage,
+  User,
+  UserStatus,
+} from '../firestore/firestore-types'
 import { createNewState, createNewUser } from '../protocols/protocol-utils'
 import { signUpProtocol } from '../protocols/sign-up-protocol'
 import { tinderProtocol } from '../protocols/tinder-protocol'
@@ -104,12 +110,15 @@ async function _runCommand(htmlMsg: string, message: TeleMessage) {
     _identifyCommand('/register', htmlMsg)
   ) {
     let newUser = await getUser(message.from.id.toString())
-    if (!newUser)
+    if (newUser) {
+      if (bounceUser(newUser)) return
+    } else {
       newUser = createNewUser(
         message.from.id,
         message.from.first_name,
         message.from.username,
       )
+    }
     return signUpProtocol(message.from, newUser, message)
   } else if (_identifyCommand('/find_penpal', htmlMsg)) {
     let user = await getUser(message.from.id.toString())
@@ -127,6 +136,27 @@ async function _runCommand(htmlMsg: string, message: TeleMessage) {
     // return sendMsg(message.from.id, msg, btns)
   } else {
     return sendMsg(message.from.id, 'Unrecognized command')
+  }
+}
+
+// /register command bounce
+async function bounceUser(user: User) {
+  const msgs = await getStatics.sign_up
+  switch (user.status) {
+    case UserStatus.PENDING:
+      if (user.state.stateStage == SignUpStage.VERIFICATION_REQUEST) {
+        await sendMsg(user.id, msgs.BOUNCE_PENDING)
+        return true
+      }
+      return false
+    case UserStatus.APPROVED:
+      await sendMsg(user.id, msgs.BOUNCE_ACCEPTED)
+      return true
+    case UserStatus.REJECTED:
+      await sendMsg(user.id, msgs.BOUNCE_REJECTED)
+      return true
+    default:
+      return false
   }
 }
 
