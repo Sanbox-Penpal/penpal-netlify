@@ -246,5 +246,6 @@ async function _verificationCallback(
   }
   unverifiedUser.state = null
   await updateUser(unverifiedUser.id, unverifiedUser)
-  await updateMessage(BOT_KEY, msg.chat.id, msg.message_id, msgText)
+  console.log(msg.chat.id, msg.message_id, msgText)
+  return updateMessage(BOT_KEY, msg.chat.id, msg.message_id, msgText)
 }
