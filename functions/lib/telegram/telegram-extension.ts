@@ -106,6 +106,7 @@ async function _runCommand(htmlMsg: string, message: TeleMessage) {
     const newUser: User = createNewUser(
       message.from.id,
       message.from.first_name,
+      message.from.username,
     )
     return signUpProtocol(message.from, newUser, message)
   } else if (_identifyCommand('/find_penpal', htmlMsg)) {
