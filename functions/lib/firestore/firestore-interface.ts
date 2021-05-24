@@ -1,4 +1,6 @@
 import {
+  DeregisterStageStatics,
+  ProfileStageStatics,
   Protocol,
   SignUpStageStatics,
   State,
@@ -23,6 +25,8 @@ const staticsConverter = <T>(protocol: Protocol) =>
 export const getStatics = {
   sign_up: staticsConverter<SignUpStageStatics>(Protocol.SIGN_UP),
   tinder: staticsConverter<TinderStageStatics>(Protocol.TINDER),
+  deregister: staticsConverter<DeregisterStageStatics>(Protocol.DEREGISTER),
+  profile: staticsConverter<ProfileStageStatics>(Protocol.PROFILE),
 }
 
 // <-- User Related Services -->

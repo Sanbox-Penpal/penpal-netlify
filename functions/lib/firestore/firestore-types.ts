@@ -43,6 +43,8 @@ export enum Protocol {
   SIGN_UP = 'Signing up',
   TINDER = 'Match Making',
   GIFT = 'Gifting',
+  DEREGISTER = 'Deregister',
+  PROFILE = 'Profile',
 }
 
 export enum SignUpStage {
@@ -80,4 +82,33 @@ export interface TinderStageStatics {
 
 export enum GiftStage {
   INITIALIZE = 'INITIALIZE',
+}
+
+export interface GiftStageStatics {}
+
+export enum DeregisterStage {
+  INITIALIZE = 'INITIALIZE',
+  RESPONSE = 'RESPONSE',
+}
+
+export interface DeregisterStageStatics {
+  REQUEST_CONFIRMATION: string
+  CONFIRM_DELETE: string
+  ABORT_DELETE: string
+}
+
+export enum ProfileStage {
+  INITIALIZE = 'INITIALIZE',
+  INTRODUTION = 'Setting Introduction',
+  INTERESTS = 'Setting Interests',
+  HOBBIES = 'Setting Hobbies',
+}
+
+export interface ProfileStageStatics {
+  NOT_CLEARED: string
+  TEMPLATE: string
+  INTRODUCTION: string
+  HOBBIES: string
+  INTERESTS: string
+  END: string
 }

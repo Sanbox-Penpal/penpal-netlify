@@ -45,6 +45,9 @@ export async function tinderProtocol(
 async function _initialize(msgs: TinderStageStatics, user: User) {
   if (user!.status != UserStatus.APPROVED)
     return sendMsg(user.id, msgs.NOT_CLEARED)
+  user.state.protocol = Protocol.TINDER
+  user.state.stateStage = TinderStage.SWIPE
+  user.state.stateData = null
   return _sendRandomCard(msgs, user)
 }
 
@@ -99,7 +102,7 @@ async function _swipeCallback(
     case 'Swipe No':
       return _sendRandomCard(msgs, user, msgId)
     case 'Swipe Done':
-      updateUserState(user.id, null)
+      await updateUserState(user.id, null)
       return updateMessage(BOT_KEY, user.id, msgId, msgs.COMPLETED)
     default:
   }
@@ -128,7 +131,7 @@ async function _sendRandomCard(
     user.swiperQueue = allUsers
   }
   let randomId = user.swiperQueue.pop()
-  await updateUser(user.id, user) // Updates swiperQueue and likedUsers if any
+  await updateUser(user.id, user) // Updates state, swiperQueue and likedUsers if any
   const matchedUser = await getUser(randomId)
   let msgText = fillUserFields(user, msgs.SWIPE_CARD)
   const metadata: ProtocolMetadata = {
