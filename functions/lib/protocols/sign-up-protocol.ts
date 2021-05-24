@@ -172,7 +172,7 @@ async function _verificationReply(
     '<b>📬 New User!</b>\n' +
     `\n<b>Name:</b> ${unverifiedUser.name}` +
     `\n<b>Username:</b> @${unverifiedUser.username}` +
-    '\n<b>Programmes:</b> \n'
+    '\n<b>Programmes:</b>'
   for (let programme of unverifiedUser.programmes) {
     adminMsg += `\n - ${programme}`
   }
