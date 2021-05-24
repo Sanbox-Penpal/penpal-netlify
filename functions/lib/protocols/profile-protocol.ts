@@ -37,7 +37,7 @@ export async function profileProtocol(
     return _processButtonPress(msgs, user, msg, callbackId, callbackData)
   switch (user.state.stateStage) {
     case ProfileStage.INITIALIZE:
-      return _initiailize(msgs, user, msg.message_id, callbackId)
+      return _initiailize(msgs, user)
     case ProfileStage.INTRODUTION:
       return _introductionReply(msgs, user, msg)
     case ProfileStage.HOBBIES:
@@ -51,7 +51,7 @@ export async function profileProtocol(
 async function _initiailize(
   msgs: ProfileStageStatics,
   user: User,
-  msgId: number,
+  msgId?: number,
   callbackId?: string,
 ) {
   user.state = createNewState(Protocol.PROFILE, ProfileStage.INTRODUTION)
@@ -101,7 +101,9 @@ async function _processButtonPress(
   callbackData: string[],
 ) {
   let callback = callbackData[0]
-  if (callback != 'Next' && callback != 'Clear')
+  if (callback == 'Initialize') {
+    _initiailize(msgs, user, msg.message_id, callbackId)
+  } else if (callback != 'Next' && callback != 'Clear')
     return answerCallbackQuery(
       BOT_KEY,
       callbackId,

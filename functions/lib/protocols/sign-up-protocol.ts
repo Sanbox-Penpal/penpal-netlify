@@ -243,7 +243,7 @@ async function _verificationCallback(
       protocol: Protocol.PROFILE,
       stage: ProfileStage.INITIALIZE,
     }
-    const btns = genInlineButtons([['Set up my profile!']], ['Profile'])
+    const btns = genInlineButtons([['Set up my profile!']], ['Initialize'])
     await sendMsg(
       unverifiedUser.id,
       embedMetadata(metadata, msgs.VERIFICATION_APPROVED),
