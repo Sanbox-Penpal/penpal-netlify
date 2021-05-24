@@ -4,6 +4,7 @@ import {
   genInlineButtons,
   sendDocument,
   sendPhoto,
+  updateCaption,
   updateMessage,
 } from '../telegram/telegram-inteface'
 import {
@@ -212,7 +213,7 @@ async function _verificationCallback(
   let msgText = formatTeleTextToHtml(msg.caption, msg.caption_entities)
 
   if (unverifiedUser.status == UserStatus.DELETED) {
-    return updateMessage(
+    return updateCaption(
       BOT_KEY,
       msg.chat.id,
       msg.message_id,
@@ -220,7 +221,7 @@ async function _verificationCallback(
     )
   } else if (unverifiedUser.status != UserStatus.PENDING) {
     let admin = await getUser(unverifiedUser.verifierId)
-    return updateMessage(
+    return updateCaption(
       BOT_KEY,
       msg.chat.id,
       msg.message_id,
@@ -246,5 +247,5 @@ async function _verificationCallback(
   }
   unverifiedUser.state = null
   await updateUser(unverifiedUser.id, unverifiedUser)
-  return updateMessage(BOT_KEY, msg.chat.id, msg.message_id, msgText)
+  return updateCaption(BOT_KEY, msg.chat.id, msg.message_id, msgText)
 }

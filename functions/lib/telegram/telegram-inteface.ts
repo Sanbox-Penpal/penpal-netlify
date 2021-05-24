@@ -168,7 +168,7 @@ export function genInlineUrlButtons(
  * @param bot_key string
  * @param chat_id integer | string
  * @param msg_id integer
- * @param text string
+ * @param text string (parsed via html)
  * @param reply_markup Telegram Object
  */
 export async function updateMessage(
@@ -189,6 +189,42 @@ export async function updateMessage(
       })
       .then((res) => {
         console.log(`Message Updated (id: ${res.data.result.message_id})`)
+        resolve(res.data)
+      })
+      .catch((err) => {
+        reject(convertError(err))
+      })
+  })
+}
+
+/**
+ * Updates a message's Caption
+ * @param bot_key string
+ * @param chat_id integer | string
+ * @param msg_id integer
+ * @param caption string (parsed via html)
+ * @param reply_markup Telegram Object
+ */
+export async function updateCaption(
+  bot_key: string,
+  chat_id: number | string,
+  msg_id: number,
+  caption: string,
+  reply_markup: TeleInlineKeyboard = {} as TeleInlineKeyboard,
+) {
+  return new Promise<TeleResponse>((resolve, reject) => {
+    axios
+      .post(TELE_API + bot_key + '/editMessageCaption', {
+        chat_id: chat_id,
+        message_id: msg_id,
+        caption: caption,
+        parse_mode: 'HTML',
+        reply_markup: reply_markup,
+      })
+      .then((res) => {
+        console.log(
+          `Message Caption Updated (id: ${res.data.result.message_id})`,
+        )
         resolve(res.data)
       })
       .catch((err) => {
