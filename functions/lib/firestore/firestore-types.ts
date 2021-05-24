@@ -40,7 +40,7 @@ export interface ContentPage {
 }
 
 export enum Protocol {
-  SIGN_UP = 'Signing up',
+  SIGN_UP = 'Signing Up',
   TINDER = 'Match Making',
   GIFT = 'Gifting',
   DEREGISTER = 'Deregister',
