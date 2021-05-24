@@ -209,7 +209,7 @@ async function _verificationCallback(
   msg: TeleMessage,
   callbackData: string[],
 ) {
-  let msgText = formatTeleTextToHtml(msg.text, msg.entities)
+  let msgText = formatTeleTextToHtml(msg.caption, msg.caption_entities)
 
   if (unverifiedUser.status == UserStatus.DELETED) {
     return updateMessage(
@@ -246,6 +246,5 @@ async function _verificationCallback(
   }
   unverifiedUser.state = null
   await updateUser(unverifiedUser.id, unverifiedUser)
-  console.log(msg.chat.id, msg.message_id, msgText)
   return updateMessage(BOT_KEY, msg.chat.id, msg.message_id, msgText)
 }

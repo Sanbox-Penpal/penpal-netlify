@@ -60,6 +60,8 @@ export interface TeleMessage {
   entities?: [TeleMessageEntities]
   new_chat_members?: [TeleUser]
   left_chat_member?: TeleUser
+  caption?: string
+  caption_entities?: [TeleMessageEntities]
   document?: TeleDocument
   photo?: [TelePhotoSize]
 
@@ -71,8 +73,6 @@ export interface TeleMessage {
   video?: TeleVideo
   video_note?: TeleVideoNote
   voice?: TeleVoice
-  caption?: string
-  caption_entities?: [TeleMessageEntities]
   contact?: TeleContact
   dice?: TeleDice
   game?: TeleGame
