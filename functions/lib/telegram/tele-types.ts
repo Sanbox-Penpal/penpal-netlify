@@ -237,27 +237,27 @@ export const ERROR_CODES = {
 // --- Error parsing function
 export function convertError(err: AxiosError): TeleError {
   if (err.response && err.response.data.description == 'Not Found') {
-    return { errorCode: 1 }
+    return { errorCode: 1, errorDescription: ERROR_CODES[1] }
   } else if (
     err.response &&
     err.response.data.description == 'Bad Request: message to delete not found'
   ) {
-    return { errorCode: 2 }
+    return { errorCode: 2, errorDescription: ERROR_CODES[2] }
   } else if (
     err.response &&
     err.response.data.description == 'Bad Request: message to edit not found'
   ) {
-    return { errorCode: 3 }
+    return { errorCode: 3, errorDescription: ERROR_CODES[3] }
   } else if (
     err.response &&
     err.response.data.description == "Bad Request: message can't be edited"
   ) {
-    return { errorCode: 4 }
+    return { errorCode: 4, errorDescription: ERROR_CODES[4] }
   } else if (
     err.response &&
     err.response.data.description == 'Bad Request: chat_id is empty'
   ) {
-    return { errorCode: 5 }
+    return { errorCode: 5, errorDescription: ERROR_CODES[5] }
   } else if (
     err.response &&
     err.response.data.description ==
@@ -265,12 +265,12 @@ export function convertError(err: AxiosError): TeleError {
         'message content and reply markup are exactly the same ' +
         'as a current content and reply markup of the message'
   ) {
-    return { errorCode: 6 }
+    return { errorCode: 6, errorDescription: ERROR_CODES[6] }
   } else if (
     err.response &&
     err.response.data.description == 'Forbidden: bot was blocked by the user'
   ) {
-    return { errorCode: 7 }
+    return { errorCode: 7, errorDescription: ERROR_CODES[7] }
   } else {
     return { errorCode: 0, errorDescription: err.response.data.description }
   }
