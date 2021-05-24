@@ -293,6 +293,7 @@ export async function sendDocument(
         chat_id: id,
         document: document_id,
         caption: caption,
+        parse_mode: 'HTML',
         reply_markup: reply_markup,
       })
       .then((res) => {
