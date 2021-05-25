@@ -197,15 +197,15 @@ async function _updateTelegramView(
  * $interests - user.interests
  */
 function _updateTemplate(template: string, user: User) {
-  template.replace('$name', user.name ? user.name : '')
-  template.replace('$intro', user.introduction ? user.introduction : '')
-  template.replace(
+  let res = template.replace('$name', user.name ? user.name : '')
+  res = template.replace('$intro', user.introduction ? user.introduction : '')
+  res = template.replace(
     '$hobbies',
     user.hobbies.length > 0 ? ' - ' + user.hobbies.join('\n - ') : '',
   )
-  template.replace(
+  res = template.replace(
     '$interests',
     user.interests.length > 0 ? ' - ' + user.interests.join('\n - ') : '',
   )
-  return template
+  return res
 }
