@@ -115,11 +115,11 @@ async function _swipeCallback(
 
 // Helper Functions
 function fillUserFields(user: User, textMsg: string) {
-  textMsg.replace('$name', user.name)
-  textMsg.replace('$intro', user.introduction)
-  textMsg.replace('$hobbies', ' - ' + user.hobbies.join('\n - '))
-  textMsg.replace('$interests', ' - ' + user.hobbies.join('\n - '))
-  return textMsg
+  let res = textMsg.replace('$name', user.name)
+  res = res.replace('$intro', user.introduction)
+  res = res.replace('$hobbies', ' - ' + user.hobbies.join('\n - '))
+  res = res.replace('$interests', ' - ' + user.hobbies.join('\n - '))
+  return res
 }
 
 async function _sendRandomCard(
