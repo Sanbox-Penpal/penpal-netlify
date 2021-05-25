@@ -105,6 +105,7 @@ async function _swipeCallback(
       msgTextMatched = embedMetadata(matchedMetadata, msgTextMatched)
       return sendMsg(likedUser.id, msgTextMatched, proceedBtn)
     case 'Swipe No':
+      await answerCallbackQuery(BOT_KEY, callbackId, `Swiped :)`, false)
       return _sendRandomCard(msgs, user, msgId)
     case 'Swipe Done':
       await updateUserState(user.id, null)
