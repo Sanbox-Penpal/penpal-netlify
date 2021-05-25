@@ -13,7 +13,7 @@ import {
   User,
   UserStatus,
 } from '../firestore/firestore-types'
-import { TeleMessage } from '../telegram/tele-types'
+import { TeleInlineKeyboard, TeleMessage } from '../telegram/tele-types'
 import { formatTeleTextToHtml, sendMsg } from '../telegram/telegram-extension'
 import {
   answerCallbackQuery,
@@ -136,17 +136,25 @@ async function _sendRandomCard(
     user.swiperQueue = allUsers
   }
   let randomId = user.swiperQueue.pop()
-  await updateUser(user.id, user) // Updates state, swiperQueue and likedUsers if any
-  const matchedUser = await getUser(randomId)
-  let msgText = fillUserFields(user, msgs.SWIPE_CARD)
-  const metadata: ProtocolMetadata = {
-    protocol: Protocol.TINDER,
-    stage: TinderStage.SWIPE,
-    referencedUser: user.id,
-    data: matchedUser.id,
+  let msgText: string
+  let btns: TeleInlineKeyboard
+  if (randomId != null) {
+    await updateUser(user.id, user) // Updates state, swiperQueue and likedUsers if any
+    const matchedUser = await getUser(randomId)
+    let msgText = fillUserFields(user, msgs.SWIPE_CARD)
+    const metadata: ProtocolMetadata = {
+      protocol: Protocol.TINDER,
+      stage: TinderStage.SWIPE,
+      referencedUser: user.id,
+      data: matchedUser.id,
+    }
+    msgText = embedMetadata(metadata, msgText)
+    btns = _genNavBtns()
+  } else {
+    msgText = 'You are the only on in the programme...sorry.'
+    btns = {} as TeleInlineKeyboard
   }
-  msgText = embedMetadata(metadata, msgText)
-  let btns = _genNavBtns()
+
   if (!msgId) {
     return sendMsg(user.id, msgText, btns)
   } else {
