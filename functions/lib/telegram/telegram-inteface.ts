@@ -417,5 +417,13 @@ export function extractMetadata(htmlText: string): ProtocolMetadata {
   if (!res) return null
   res = res.split('/end')[0]
   res = res.split("'").join('"')
-  return JSON.parse(res.split('/end')[0])
+  let obj = JSON.parse(res.split('/end')[0])
+  // Telegram replaces whitespace in links to %20
+  Object.keys(obj).forEach((key) => {
+    let value = obj[key]
+    if (typeof value == 'string') {
+      obj[key] = value.replace(/%20/g, ' ')
+    }
+  })
+  return obj
 }
