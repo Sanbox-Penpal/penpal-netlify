@@ -6,6 +6,7 @@ import {
   TeleInlineKeyboard,
   TeleMessageEntities,
   TeleReplyKeyboard,
+  TeleMessage,
 } from './tele-types'
 import { ProtocolMetadata } from '../protocols/types'
 
@@ -59,7 +60,7 @@ export async function sendMessage(
   reply_markup:
     | TeleInlineKeyboard
     | TeleReplyKeyboard = {} as TeleInlineKeyboard,
-) {
+): Promise<TeleMessage> {
   return new Promise((resolve, reject) => {
     axios
       .post(TELE_API + bot_key + '/sendMessage', {

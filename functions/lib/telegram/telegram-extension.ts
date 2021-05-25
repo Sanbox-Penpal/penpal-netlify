@@ -206,8 +206,8 @@ export async function sendMsg(
   reply_markup:
     | TeleInlineKeyboard
     | TeleReplyKeyboard = {} as TeleInlineKeyboard,
-) {
-  await sendMessage(BOT_KEY, id, msg, reply_markup)
+): Promise<TeleMessage> {
+  return sendMessage(BOT_KEY, id, msg, reply_markup)
 }
 
 // Helper functions

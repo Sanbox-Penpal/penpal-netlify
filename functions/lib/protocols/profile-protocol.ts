@@ -37,7 +37,7 @@ export async function profileProtocol(
     return _processButtonPress(msgs, user, msg, callbackId, callbackData)
   switch (user.state.stateStage) {
     case ProfileStage.INITIALIZE:
-      return _initiailize(msgs, user)
+      return _initiailize(msgs, user, msg.message_id)
     case ProfileStage.INTRODUTION:
       return _introductionReply(msgs, user, msg)
     case ProfileStage.HOBBIES:
@@ -54,13 +54,17 @@ async function _initiailize(
   msgId?: number,
   callbackId?: string,
 ) {
-  user.state = createNewState(Protocol.PROFILE, ProfileStage.INTRODUTION)
-  await updateUserState(user.id, user.state)
+  user.state = createNewState(Protocol.PROFILE, ProfileStage.INTRODUTION, msgId)
   let textMsg = _updateTemplate(msgs.TEMPLATE, user)
   textMsg += `\n\n\n${msgs.INTRODUCTION}`
   const btn = genInlineButtons([['Clear', 'Next']], ['Clear', 'Next'])
-  if (callbackId) return updateMessage(BOT_KEY, user.id, msgId, textMsg, btn)
-  return sendMsg(user.id, textMsg, btn)
+  if (callbackId) {
+    await updateUserState(user.id, user.state)
+    return updateMessage(BOT_KEY, user.id, msgId, textMsg, btn)
+  }
+  let msg = await sendMsg(user.id, textMsg, btn)
+  user.state.stateData = msg.message_id
+  return updateUserState(user.id, user.state)
 }
 
 async function _introductionReply(
@@ -70,7 +74,7 @@ async function _introductionReply(
 ) {
   user.introduction = msg.text
   await updateUserIntroduction(user.id, user.introduction)
-  return _updateTelegramView(msgs, user, msg)
+  return _updateTelegramView(msgs, user, user.state.stateData)
 }
 
 async function _hobbiesReply(
@@ -80,7 +84,7 @@ async function _hobbiesReply(
 ) {
   user.hobbies.push(msg.text)
   await updateUserHobbies(user.id, user.hobbies)
-  return _updateTelegramView(msgs, user, msg)
+  return _updateTelegramView(msgs, user, user.state.stateData)
 }
 
 async function _interestsReply(
@@ -90,7 +94,7 @@ async function _interestsReply(
 ) {
   user.interests.push(msg.text)
   await updateUserInterests(user.id, user.interests)
-  return _updateTelegramView(msgs, user, msg)
+  return _updateTelegramView(msgs, user, user.state.stateData)
 }
 
 async function _processButtonPress(
@@ -102,7 +106,7 @@ async function _processButtonPress(
 ) {
   let callback = callbackData[0]
   if (callback == 'Initialize') {
-    _initiailize(msgs, user, msg.message_id, callbackId)
+    return _initiailize(msgs, user, msg.message_id, callbackId)
   } else if (callback != 'Next' && callback != 'Clear')
     return answerCallbackQuery(
       BOT_KEY,
@@ -111,17 +115,14 @@ async function _processButtonPress(
       true,
     )
   if (callback == 'Next') {
-    return _transitionStateCallback(msgs, user, msg)
+    return _transitionStateCallback(msgs, user)
   } else if (callback == 'Clear') {
-    return _clearCallback(msgs, user, msg)
+    return _clearCallback(msgs, user)
   }
 }
 
-async function _transitionStateCallback(
-  msgs: ProfileStageStatics,
-  user: User,
-  msg: TeleMessage,
-) {
+async function _transitionStateCallback(msgs: ProfileStageStatics, user: User) {
+  const msgIdToEdit = user.state.stateData
   switch (user.state.stateStage) {
     case ProfileStage.INITIALIZE:
       user.state.stateStage = ProfileStage.INTRODUTION
@@ -139,14 +140,10 @@ async function _transitionStateCallback(
       return
   }
   await updateUserState(user.id, user.state)
-  return _updateTelegramView(msgs, user, msg)
+  return _updateTelegramView(msgs, user, msgIdToEdit)
 }
 
-async function _clearCallback(
-  msgs: ProfileStageStatics,
-  user: User,
-  msg: TeleMessage,
-) {
+async function _clearCallback(msgs: ProfileStageStatics, user: User) {
   switch (user.state.stateStage) {
     case ProfileStage.INTRODUTION:
       user.introduction = null
@@ -163,13 +160,13 @@ async function _clearCallback(
     default:
       return
   }
-  return _updateTelegramView(msgs, user, msg)
+  return _updateTelegramView(msgs, user, user.state.stateData)
 }
 
 async function _updateTelegramView(
   msgs: ProfileStageStatics,
   user: User,
-  msg: TeleMessage,
+  msgId: number,
 ) {
   let textMsg = _updateTemplate(msgs.TEMPLATE, user)
   const btns = genInlineButtons([['Clear', 'Next']], ['Clear', 'Next'])
@@ -190,7 +187,7 @@ async function _updateTelegramView(
         return
     }
   }
-  return updateMessage(BOT_KEY, user.id, msg.message_id, textMsg, btns)
+  return updateMessage(BOT_KEY, user.id, msgId, textMsg, btns)
 }
 
 /**
@@ -200,9 +197,15 @@ async function _updateTelegramView(
  * $interests - user.interests
  */
 function _updateTemplate(template: string, user: User) {
-  template.replace('$name', user.name)
-  template.replace('$intro', user.introduction)
-  template.replace('$hobbies', ' - ' + user.hobbies.join('\n - '))
-  template.replace('$interests', ' - ' + user.hobbies.join('\n - '))
+  template.replace('$name', user.name ? user.name : '')
+  template.replace('$intro', user.introduction ? user.introduction : '')
+  template.replace(
+    '$hobbies',
+    user.hobbies.length > 0 ? ' - ' + user.hobbies.join('\n - ') : '',
+  )
+  template.replace(
+    '$interests',
+    user.interests.length > 0 ? ' - ' + user.interests.join('\n - ') : '',
+  )
   return template
 }
