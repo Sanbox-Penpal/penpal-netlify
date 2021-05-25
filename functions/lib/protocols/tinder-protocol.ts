@@ -29,26 +29,31 @@ const BOT_KEY = process.env.TELE_BOT_KEY
 export async function tinderProtocol(
   user: User,
   msg: TeleMessage,
+  msgId?: number,
   callbackId?: string,
   callbackData?: string[],
 ) {
   const msgs = await getStatics.tinder
   switch (user.state.stateStage) {
     case TinderStage.INITIALIZE:
-      return _initialize(msgs, user)
+      return _initialize(msgs, user, msgId)
     case TinderStage.SWIPE:
       return _swipeCallback(msgs, user, msg, callbackData[0], callbackId)
     default:
   }
 }
 
-async function _initialize(msgs: TinderStageStatics, user: User) {
+async function _initialize(
+  msgs: TinderStageStatics,
+  user: User,
+  msgId?: number,
+) {
   if (user!.status != UserStatus.APPROVED)
     return sendMsg(user.id, msgs.NOT_CLEARED)
   user.state.protocol = Protocol.TINDER
   user.state.stateStage = TinderStage.SWIPE
   user.state.stateData = null
-  return _sendRandomCard(msgs, user)
+  return _sendRandomCard(msgs, user, msgId)
 }
 
 async function _swipeCallback(

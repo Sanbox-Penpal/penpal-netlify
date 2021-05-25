@@ -96,7 +96,7 @@ export async function processTeleCallback(callback: TeleCallbackQuery) {
     case Protocol.PROFILE:
       return profileProtocol(user, msg, callback.id, data)
     case Protocol.TINDER:
-      return tinderProtocol(user, msg, callback.id, data)
+      return tinderProtocol(user, msg, msg.message_id, callback.id, data)
     case Protocol.DEREGISTER:
       return deregisterProtocol(user, msg, callback.id, data)
     default:

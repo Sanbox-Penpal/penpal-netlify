@@ -11,15 +11,18 @@ import {
   UserStatus,
   ProfileStageStatics,
   Protocol,
+  TinderStage,
 } from '../firestore/firestore-types'
 import { TeleInlineKeyboard, TeleMessage } from '../telegram/tele-types'
 import { sendMsg } from '../telegram/telegram-extension'
 import {
   answerCallbackQuery,
+  embedMetadata,
   genInlineButtons,
   updateMessage,
 } from '../telegram/telegram-inteface'
 import { createNewState } from './protocol-utils'
+import { ProtocolMetadata } from './types'
 
 const BOT_KEY = process.env.TELE_BOT_KEY
 
@@ -139,7 +142,15 @@ async function _transitionStateCallback(
       break
     case ProfileStage.INTERESTS:
       user.state = null
-      break
+      await updateUserState(user.id, user.state)
+      await _updateTelegramView(msgs, user, msgIdToEdit)
+      const metadata: ProtocolMetadata = {
+        protocol: Protocol.TINDER,
+        stage: TinderStage.INITIALIZE,
+      }
+      const endProfileMsg = embedMetadata(metadata, msgs.START_TINDER)
+      const btns = genInlineButtons([['Find Penpals!']], ['Init'])
+      return sendMsg(user.id, endProfileMsg, btns)
     default:
       return
   }

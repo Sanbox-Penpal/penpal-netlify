@@ -116,4 +116,5 @@ export interface ProfileStageStatics extends GeneralStaticDocument {
   HOBBIES: string
   INTERESTS: string
   END: string
+  START_TINDER: string
 }
