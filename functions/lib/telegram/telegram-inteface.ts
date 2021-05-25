@@ -72,7 +72,7 @@ export async function sendMessage(
       .then((res) => {
         const msgDetails = res.data.result
         console.log(`Message posted (id: ${msgDetails.message_id})`)
-        resolve(res.data)
+        resolve(res.data.result)
       })
       .catch((err) => {
         reject(convertError(err))

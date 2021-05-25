@@ -12,7 +12,7 @@ import {
   ProfileStageStatics,
   Protocol,
 } from '../firestore/firestore-types'
-import { TeleMessage } from '../telegram/tele-types'
+import { TeleInlineKeyboard, TeleMessage } from '../telegram/tele-types'
 import { sendMsg } from '../telegram/telegram-extension'
 import {
   answerCallbackQuery,
@@ -37,7 +37,7 @@ export async function profileProtocol(
     return _processButtonPress(msgs, user, msg, callbackId, callbackData)
   switch (user.state.stateStage) {
     case ProfileStage.INITIALIZE:
-      return _initiailize(msgs, user, msg.message_id)
+      return _initialize(msgs, user)
     case ProfileStage.INTRODUTION:
       return _introductionReply(msgs, user, msg)
     case ProfileStage.HOBBIES:
@@ -48,7 +48,7 @@ export async function profileProtocol(
   }
 }
 
-async function _initiailize(
+async function _initialize(
   msgs: ProfileStageStatics,
   user: User,
   msgId?: number,
@@ -106,7 +106,7 @@ async function _processButtonPress(
 ) {
   let callback = callbackData[0]
   if (callback == 'Initialize') {
-    return _initiailize(msgs, user, msg.message_id, callbackId)
+    return _initialize(msgs, user, msg.message_id, callbackId)
   } else if (callback != 'Next' && callback != 'Clear')
     return answerCallbackQuery(
       BOT_KEY,
@@ -179,9 +179,10 @@ async function _updateTelegramView(
   msgId: number,
 ) {
   let textMsg = _updateTemplate(msgs.TEMPLATE, user)
-  const btns = genInlineButtons([['Clear', 'Next']], ['Clear', 'Next'])
+  let btns = genInlineButtons([['Clear', 'Next']], ['Clear', 'Next'])
   if (!user.state) {
     textMsg += `\n\n\n${msgs.END}`
+    btns = {} as TeleInlineKeyboard
   } else {
     switch (user.state.stateStage) {
       case ProfileStage.INTRODUTION:
@@ -192,6 +193,7 @@ async function _updateTelegramView(
         break
       case ProfileStage.INTERESTS:
         textMsg += `\n\n\n${msgs.INTERESTS}`
+        btns = genInlineButtons([['Clear', 'Finish']], ['Clear', 'Next'])
         break
       default:
         return
