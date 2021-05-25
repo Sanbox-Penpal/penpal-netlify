@@ -1,4 +1,8 @@
-import { getStatics, updateUserState } from '../firestore/firestore-interface'
+import {
+  deleteUser,
+  getStatics,
+  updateUserState,
+} from '../firestore/firestore-interface'
 import {
   DeregisterStage,
   DeregisterStageStatics,
@@ -44,6 +48,7 @@ async function _responseCallback(
   await updateUserState(user.id, null)
   switch (choice) {
     case 'Confirm':
+      await deleteUser(user.id)
       return updateMessage(BOT_KEY, user.id, msgId, msgs.CONFIRM_DELETE)
     case 'Cancel':
       return updateMessage(BOT_KEY, user.id, msgId, msgs.ABORT_DELETE)
