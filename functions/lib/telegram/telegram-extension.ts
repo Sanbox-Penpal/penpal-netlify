@@ -85,7 +85,6 @@ export async function processTeleCallback(callback: TeleCallbackQuery) {
       metadata.stage,
       metadata.data,
     )
-    console.log(metadata, user.state, user.state.protocol)
   }
 
   const msg = callback.message

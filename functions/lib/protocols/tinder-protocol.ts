@@ -141,7 +141,7 @@ async function _sendRandomCard(
   if (randomId != null) {
     await updateUser(user.id, user) // Updates state, swiperQueue and likedUsers if any
     const matchedUser = await getUser(randomId)
-    let msgText = fillUserFields(user, msgs.SWIPE_CARD)
+    msgText = fillUserFields(user, msgs.SWIPE_CARD)
     const metadata: ProtocolMetadata = {
       protocol: Protocol.TINDER,
       stage: TinderStage.SWIPE,
