@@ -45,6 +45,7 @@ export enum Protocol {
   GIFT = 'Gifting',
   DEREGISTER = 'Deregister',
   PROFILE = 'Profile',
+  ABOUT = 'About',
 }
 
 export type GeneralStaticDocument = { [key: string]: string | string[] }
@@ -117,4 +118,8 @@ export interface ProfileStageStatics extends GeneralStaticDocument {
   INTERESTS: string
   END: string
   START_TINDER: string
+}
+
+export interface AboutStageStatics extends GeneralStaticDocument {
+  ABOUT: string
 }

@@ -9,6 +9,7 @@ import {
   User,
   UserStatus,
   GeneralStaticDocument,
+  AboutStageStatics,
 } from './firestore-types'
 import { CONTENT_PAGE_DB, db } from './firestore-utils'
 
@@ -38,6 +39,7 @@ export const getStatics = {
   tinder: staticsConverter<TinderStageStatics>(Protocol.TINDER),
   deregister: staticsConverter<DeregisterStageStatics>(Protocol.DEREGISTER),
   profile: staticsConverter<ProfileStageStatics>(Protocol.PROFILE),
+  about: staticsConverter<AboutStageStatics>(Protocol.ABOUT),
 }
 
 // <-- User Related Services -->

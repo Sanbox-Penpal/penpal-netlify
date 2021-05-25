@@ -10,6 +10,7 @@ import {
   User,
   UserStatus,
 } from '../firestore/firestore-types'
+import { aboutProtocol } from '../protocols/about-protocol'
 import { deregisterProtocol } from '../protocols/deregister-protocol'
 import { profileProtocol } from '../protocols/profile-protocol'
 import { createNewState, createNewUser } from '../protocols/protocol-utils'
@@ -157,6 +158,9 @@ async function _runCommand(htmlMsg: string, message: TeleMessage) {
       return sendMsg(message.from.id, 'You are not registered with Sanbox yet.')
     user.state = createNewState(Protocol.DEREGISTER, DeregisterStage.INITIALIZE)
     return deregisterProtocol(user, message)
+    // About
+  } else if (_identifyCommand('/about', htmlMsg)) {
+    return aboutProtocol(message.from)
     //
   } else if (_identifyCommand('/identify', htmlMsg)) {
     // Identifying chat Id
