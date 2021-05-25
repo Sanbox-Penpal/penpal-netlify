@@ -153,6 +153,7 @@ async function _sendRandomCard(
   } else {
     msgText = 'You are the only one in the programme...sorry.'
     btns = {} as TeleInlineKeyboard
+    await updateUserState(user.id, null)
   }
 
   if (!msgId) {
