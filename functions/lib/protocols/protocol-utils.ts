@@ -30,7 +30,7 @@ export function createNewUser(
 export function createNewState(
   protocol: Protocol,
   stage: SignUpStage | string,
-  data?: any,
+  data: any = null,
 ): State {
   const newState: State = {
     protocol: protocol,
