@@ -101,6 +101,9 @@ export async function updateUserQueue(userId: string, queue: string[]) {
 // End of potential redundancy
 
 export async function deleteUser(userId: string) {
+  await db.contentPage.doc(CONTENT_PAGE_DB).update({
+    allUsers: db.admin.firestore.FieldValue.arrayRemove(userId),
+  })
   const docRef = db.users.doc(userId)
   return docRef.delete()
 }
