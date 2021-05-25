@@ -115,13 +115,17 @@ async function _processButtonPress(
       true,
     )
   if (callback == 'Next') {
-    return _transitionStateCallback(msgs, user)
+    return _transitionStateCallback(msgs, user, callbackId)
   } else if (callback == 'Clear') {
-    return _clearCallback(msgs, user)
+    return _clearCallback(msgs, user, callbackId)
   }
 }
 
-async function _transitionStateCallback(msgs: ProfileStageStatics, user: User) {
+async function _transitionStateCallback(
+  msgs: ProfileStageStatics,
+  user: User,
+  callbackId: string,
+) {
   const msgIdToEdit = user.state.stateData
   switch (user.state.stateStage) {
     case ProfileStage.INITIALIZE:
@@ -140,10 +144,15 @@ async function _transitionStateCallback(msgs: ProfileStageStatics, user: User) {
       return
   }
   await updateUserState(user.id, user.state)
+  await answerCallbackQuery(BOT_KEY, callbackId, 'Field updated', false)
   return _updateTelegramView(msgs, user, msgIdToEdit)
 }
 
-async function _clearCallback(msgs: ProfileStageStatics, user: User) {
+async function _clearCallback(
+  msgs: ProfileStageStatics,
+  user: User,
+  callbackId: string,
+) {
   switch (user.state.stateStage) {
     case ProfileStage.INTRODUTION:
       user.introduction = null
@@ -160,6 +169,7 @@ async function _clearCallback(msgs: ProfileStageStatics, user: User) {
     default:
       return
   }
+  await answerCallbackQuery(BOT_KEY, callbackId, 'Cleared', false)
   return _updateTelegramView(msgs, user, user.state.stateData)
 }
 
