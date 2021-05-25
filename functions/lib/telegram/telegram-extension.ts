@@ -65,17 +65,21 @@ export async function processTeleCallback(callback: TeleCallbackQuery) {
     formatTeleTextToHtml(callback.message.text, callback.message.entities),
   )
   let user: User
-  if (!metadata || !metadata.referencedUser) {
-    user = await getUser(callback.from.id.toString())
-    if (!user)
-      return answerCallbackQuery(
-        BOT_KEY,
-        callback.id,
-        'Referenced User not found',
-        false,
-      )
-  } else {
+  if (metadata && metadata.referencedUser) {
     user = await getUser(metadata.referencedUser)
+  } else {
+    user = await getUser(callback.from.id.toString())
+  }
+
+  if (!user)
+    return answerCallbackQuery(
+      BOT_KEY,
+      callback.id,
+      'Referenced User not found',
+      false,
+    )
+
+  if (metadata) {
     user.state = createNewState(
       metadata.protocol,
       metadata.stage,
