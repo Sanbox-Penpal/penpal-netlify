@@ -151,7 +151,7 @@ async function _sendRandomCard(
     msgText = embedMetadata(metadata, msgText)
     btns = _genNavBtns()
   } else {
-    msgText = 'You are the only on in the programme...sorry.'
+    msgText = 'You are the only one in the programme...sorry.'
     btns = {} as TeleInlineKeyboard
   }
 
