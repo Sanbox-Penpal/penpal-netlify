@@ -76,9 +76,11 @@ export async function processTeleCallback(callback: TeleCallbackQuery) {
       )
   } else {
     user = await getUser(metadata.referencedUser)
-    user.state.protocol = metadata.protocol
-    user.state.stateStage = metadata.stage
-    user.state.stateData = metadata.data
+    user.state = createNewState(
+      metadata.protocol,
+      metadata.stage,
+      metadata.data,
+    )
   }
 
   const msg = callback.message

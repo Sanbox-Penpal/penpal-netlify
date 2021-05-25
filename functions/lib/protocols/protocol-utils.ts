@@ -30,11 +30,12 @@ export function createNewUser(
 export function createNewState(
   protocol: Protocol,
   stage: SignUpStage | string,
+  data?: any,
 ): State {
   const newState: State = {
     protocol: protocol,
     stateStage: stage,
-    stateData: null,
+    stateData: data,
   }
   return newState
 }
