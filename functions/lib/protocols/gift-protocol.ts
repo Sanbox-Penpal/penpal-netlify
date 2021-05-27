@@ -80,7 +80,7 @@ async function _swipeCard(
       selectedCard.url = selectedCard.url.replace('.webp', '.png')
       const newInvoice: TeleInvoice = {
         title: selectedCard.title,
-        description: selectedCard.description,
+        description: `Sending this card to: ${giftee}\n\n${selectedCard}`,
         start_parameter: null,
         currency: 'SGD',
         total_amount: selectedCard.price, // doesn't matter
@@ -99,7 +99,6 @@ async function _swipeCard(
         `${selectedCardId}_for_${giftee}`,
         priceBreakdown,
         selectedCard.url,
-        true,
       )
     case SwipeDirection.BACK:
       userIndex = _cycleIndex(cards.length, userIndex, false)
