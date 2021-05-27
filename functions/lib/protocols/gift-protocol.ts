@@ -81,7 +81,7 @@ async function _swipeCard(
       selectedCard.url = selectedCard.url.replace('.webp', '.png')
       const newInvoice: TeleInvoice = {
         title: selectedCard.title,
-        description: `Sending this card to: ${gifteeName}\n\n - ${selectedCard.description}`,
+        description: `Sending this card to: ${gifteeName}`,
         start_parameter: null,
         currency: 'SGD',
         total_amount: selectedCard.price, // doesn't matter
