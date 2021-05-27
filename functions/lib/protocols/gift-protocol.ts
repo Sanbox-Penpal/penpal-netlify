@@ -118,6 +118,7 @@ async function _swipeCard(
 function _cycleIndex(total: number, index: number, forward = true) {
   if (forward) index += 1
   else index -= 1
+  if (index == -1) index = total - 1
   return index % total
 }
 
