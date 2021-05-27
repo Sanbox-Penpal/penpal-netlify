@@ -68,7 +68,8 @@ async function _swipeCard(
   callbackId?: string,
 ) {
   const cards = await getAllGiftCards()
-  let giftee = user.state.stateData[0]
+  let gifteeId = user.state.stateData[0]
+  let gifteeName = user.state.stateData[1]
   let userIndex = user.state.stateData[2]
   switch (direction) {
     case SwipeDirection.SELECT:
@@ -80,7 +81,7 @@ async function _swipeCard(
       selectedCard.url = selectedCard.url.replace('.webp', '.png')
       const newInvoice: TeleInvoice = {
         title: selectedCard.title,
-        description: `Sending this card to: ${giftee}\n\n${selectedCard}`,
+        description: `Sending this card to: ${gifteeName}\n\n - ${selectedCard.description}`,
         start_parameter: null,
         currency: 'SGD',
         total_amount: selectedCard.price, // doesn't matter
@@ -96,7 +97,7 @@ async function _swipeCard(
         process.env.STRIPE_TOKEN,
         user.id,
         newInvoice,
-        `${selectedCardId}_for_${giftee}`,
+        `${selectedCardId}_for_${gifteeId}`,
         priceBreakdown,
         selectedCard.url,
       )
