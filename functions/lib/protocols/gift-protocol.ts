@@ -38,7 +38,7 @@ export async function giftProtocol(
   }
 }
 
-const enum SwipeDirection {
+enum SwipeDirection {
   SELECT = 'Select',
   BACK = 'Back',
   NEXT = 'Next',
