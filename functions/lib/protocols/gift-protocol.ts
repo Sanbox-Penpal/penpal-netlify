@@ -13,6 +13,7 @@ import {
 import {
   answerCallbackQuery,
   genInlineButtons,
+  sendInvoice,
   sendPhoto,
   updateMedia,
   updateMessage,
@@ -51,13 +52,9 @@ async function _initialize(
   msg: TeleMessage,
   callbackId?: string,
 ) {
-  const btns = genInlineButtons(
-    [['Select'], ['Back', 'Next']],
-    [SwipeDirection.SELECT, SwipeDirection.BACK, SwipeDirection.NEXT],
-  )
   if (callbackId)
-    await updateMessage(BOT_KEY, user.id, msg.message_id, msgs.INITIALIZE, btns)
-  await sendMsg(user.id, msgs.INITIALIZE, btns)
+    await updateMessage(BOT_KEY, user.id, msg.message_id, msgs.INITIALIZE)
+  await sendMsg(user.id, msgs.INITIALIZE)
   return _swipeCard(msgs, user, msg, SwipeDirection.INITIALIZE)
 }
 
@@ -73,7 +70,9 @@ async function _swipeCard(
   switch (direction) {
     case SwipeDirection.SELECT:
       await answerCallbackQuery(BOT_KEY, callbackId, 'Card Selected', false)
-      return // Do smt
+      user.state.stateStage = GiftStage.PAYMENT
+      return
+    //return sendInvoice(BOT_KEY, process.env.STRIPE_TOKEN)
     case SwipeDirection.BACK:
       userIndex = _cycleIndex(cards.length, userIndex, false)
       user.state.stateData[2] = userIndex
