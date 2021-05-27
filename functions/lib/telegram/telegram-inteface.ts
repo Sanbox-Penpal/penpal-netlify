@@ -590,7 +590,7 @@ export const cleanseString = function (string: string): string {
 export function embedMetadata(metadata: ProtocolMetadata, text: string) {
   text += `<a href="tg://metadata/${JSON.stringify(metadata)
     .split('"')
-    .join("'")}/end">\u200b</a>`
+    .join('`')}/end">\u200b</a>`
   return text
 }
 
@@ -598,7 +598,7 @@ export function extractMetadata(htmlText: string): ProtocolMetadata {
   var res = htmlText.split('tg://metadata/')[1]
   if (!res) return null
   res = res.split('/end')[0]
-  res = res.split("'").join('"')
+  res = res.split('`').join('"')
   let obj = JSON.parse(res.split('/end')[0])
   // Telegram replaces whitespace in links to %20
   Object.keys(obj).forEach((key) => {

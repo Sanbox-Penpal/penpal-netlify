@@ -63,7 +63,6 @@ export async function processTeleMsg(message: TeleMessage) {
 }
 
 export async function processTeleCallback(callback: TeleCallbackQuery) {
-  console.log(callback.message.entities)
   console.log(
     formatTeleTextToHtml(callback.message.text, callback.message.entities),
   )
