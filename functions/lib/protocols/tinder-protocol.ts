@@ -117,9 +117,20 @@ async function _swipeCallback(
 // Helper Functions
 function fillUserFields(user: User, textMsg: string) {
   let res = textMsg.replace('$name', user.name)
-  res = res.replace('$intro', user.introduction)
-  res = res.replace('$hobbies', ' - ' + user.hobbies.join('\n - '))
-  res = res.replace('$interests', ' - ' + user.hobbies.join('\n - '))
+  const intro = user.introduction
+  res = res.replace('$intro', intro ? intro : '<i>No introduction</i>')
+  res = res.replace(
+    '$hobbies',
+    user.hobbies.length > 0
+      ? ` - ${user.hobbies.join('\n - ')}`
+      : '\n<i>No Hobbies</i>',
+  )
+  res = res.replace(
+    '$interests',
+    user.interests.length > 0
+      ? ` - ${user.interests.join('\n - ')}`
+      : '\n<i>No Interests</i>',
+  )
   return res
 }
 
