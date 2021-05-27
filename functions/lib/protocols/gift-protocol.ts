@@ -90,6 +90,7 @@ async function _swipeCard(
           amount: selectedCard.price * 100,
         },
       ]
+      console.log(priceBreakdown[0])
       return sendInvoice(
         BOT_KEY,
         process.env.STRIPE_TOKEN,
