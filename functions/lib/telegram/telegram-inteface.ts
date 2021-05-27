@@ -607,7 +607,9 @@ export function extractMetadata(htmlText: string): ProtocolMetadata {
       obj[key] = value.replace(/%20/g, ' ')
     } else if (typeof value == 'object') {
       if (Array.isArray(value))
-        obj[key] = value.map((elem) => elem.replace(/%20/g, ' '))
+        obj[key] = value.map((elem) =>
+          typeof elem == 'string' ? elem.replace(/%20/g, ' ') : elem,
+        )
     }
   })
   return obj

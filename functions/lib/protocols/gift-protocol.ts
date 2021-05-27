@@ -55,6 +55,7 @@ async function _initialize(
   if (callbackId)
     await updateMessage(BOT_KEY, user.id, msg.message_id, msgs.INITIALIZE)
   await sendMsg(user.id, msgs.INITIALIZE)
+  user.state.stateStage = GiftStage.SELECT_CARD
   return _swipeCard(msgs, user, msg, SwipeDirection.INITIALIZE)
 }
 
