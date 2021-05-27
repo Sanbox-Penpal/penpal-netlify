@@ -63,13 +63,9 @@ export async function processTeleMsg(message: TeleMessage) {
 }
 
 export async function processTeleCallback(callback: TeleCallbackQuery) {
-  console.log(
-    formatTeleTextToHtml(callback.message.text, callback.message.entities),
-  )
   const metadata = extractMetadata(
     formatTeleTextToHtml(callback.message.text, callback.message.entities),
   )
-  console.log(metadata)
 
   let user: User
   if (metadata && metadata.referencedUser) {
