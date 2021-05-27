@@ -82,14 +82,12 @@ async function _swipeCard(
         description: selectedCard.description,
         start_parameter: null,
         currency: 'SGD',
-        total_amount: selectedCard.price,
+        total_amount: selectedCard.price, // doesn't matter
       }
-      console.log(typeof selectedCard.price == 'number')
-      console.log(selectedCard.price)
       const priceBreakdown: TelePrice[] = [
         {
           label: 'Card Price',
-          amount: selectedCard.price / 100.0,
+          amount: selectedCard.price * 100,
         },
       ]
       return sendInvoice(

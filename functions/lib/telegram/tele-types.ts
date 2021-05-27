@@ -233,7 +233,7 @@ export interface TeleInvoice {
 
 export interface TelePrice {
   label: string
-  amount: number
+  amount: number // in cents
 }
 
 export interface TeleShippingOption {
