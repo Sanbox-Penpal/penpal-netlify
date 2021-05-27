@@ -260,9 +260,7 @@ export async function updateMedia(
         reply_markup: reply_markup,
       })
       .then((res) => {
-        console.log(
-          `Message Caption Updated (id: ${res.data.result.message_id})`,
-        )
+        console.log(`Message Media Updated (id: ${res.data.result.message_id})`)
         resolve(res.data)
       })
       .catch((err) => {

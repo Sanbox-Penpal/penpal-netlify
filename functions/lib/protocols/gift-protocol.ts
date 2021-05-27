@@ -84,6 +84,8 @@ async function _swipeCard(
         currency: 'SGD',
         total_amount: selectedCard.price,
       }
+      console.log(typeof selectedCard.price == 'number')
+      console.log(selectedCard.price)
       const priceBreakdown: TelePrice[] = [
         {
           label: 'Card Price',
