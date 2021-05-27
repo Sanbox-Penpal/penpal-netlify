@@ -152,6 +152,7 @@ function _fillTemplate(template: string, card: GiftCard, giftingTo: string) {
   let res = template.replace('$giftee', giftingTo)
   res = res.replace('$title', card.title ? card.title : '')
   res = res.replace('$description', card.description ? card.description : '')
+  res = res.replace('$price', card.price ? `$${card.price.toFixed(2)}` : '')
   res = res.replace(
     '$left',
     card.left ? `<i>Pieces Left: ${card.left}</i>` : '',
