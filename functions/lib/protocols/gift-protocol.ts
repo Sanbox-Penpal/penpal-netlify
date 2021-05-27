@@ -77,6 +77,7 @@ async function _swipeCard(
       user.state.stateStage = GiftStage.PAYMENT
       const selectedCardId = cards[userIndex]
       const selectedCard = await getCard(selectedCardId)
+      selectedCard.url = selectedCard.url.replace('.webp', '.png')
       const newInvoice: TeleInvoice = {
         title: selectedCard.title,
         description: selectedCard.description,
