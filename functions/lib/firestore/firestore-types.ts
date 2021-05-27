@@ -38,6 +38,7 @@ export interface GiftCard {
   url: string
   title: string
   description: string
+  price: number
   left?: number
 }
 
@@ -91,6 +92,7 @@ export interface TinderStageStatics extends GeneralStaticDocument {
 export enum GiftStage {
   INITIALIZE = 'INITIALIZE',
   SELECT_CARD = 'SELECT_CARD',
+  PAYMENT = 'PAYMENT',
 }
 
 export interface GiftStageStatics extends GeneralStaticDocument {

@@ -18,7 +18,7 @@ import {
   updateMedia,
   updateMessage,
 } from '../telegram/telegram-inteface'
-import { TeleMessage } from '../telegram/tele-types'
+import { TeleInvoice, TeleMessage, TelePrice } from '../telegram/tele-types'
 import { sendMsg } from '../telegram/telegram-extension'
 
 const BOT_KEY = process.env.TELE_BOT_KEY
@@ -67,13 +67,37 @@ async function _swipeCard(
   callbackId?: string,
 ) {
   const cards = await getAllGiftCards()
+  let giftee = user.state.stateData[0]
   let userIndex = user.state.stateData[2]
   switch (direction) {
     case SwipeDirection.SELECT:
       await answerCallbackQuery(BOT_KEY, callbackId, 'Card Selected', false)
       user.state.stateStage = GiftStage.PAYMENT
-      return
-    //return sendInvoice(BOT_KEY, process.env.STRIPE_TOKEN)
+      const selectedCardId = cards[userIndex]
+      const selectedCard = await getCard(selectedCardId)
+      const newInvoice: TeleInvoice = {
+        title: selectedCard.title,
+        description: selectedCard.description,
+        start_parameter: null,
+        currency: 'SGD',
+        total_amount: selectedCard.price,
+      }
+      const priceBreakdown: TelePrice[] = [
+        {
+          label: 'Card Price',
+          amount: selectedCard.price / 100.0,
+        },
+      ]
+      return sendInvoice(
+        BOT_KEY,
+        process.env.STRIPE_TOKEN,
+        user.id,
+        newInvoice,
+        `${selectedCardId}_for_${giftee}`,
+        priceBreakdown,
+        selectedCard.url,
+        true,
+      )
     case SwipeDirection.BACK:
       userIndex = _cycleIndex(cards.length, userIndex, false)
       user.state.stateData[2] = userIndex
