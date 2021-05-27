@@ -248,7 +248,7 @@ export async function updateMedia(
 ) {
   return new Promise<TeleResponse>((resolve, reject) => {
     axios
-      .post(TELE_API + bot_key + '/editMessageCaption', {
+      .post(TELE_API + bot_key + '/editMessageMedia', {
         chat_id: chat_id,
         message_id: msg_id,
         media: {
