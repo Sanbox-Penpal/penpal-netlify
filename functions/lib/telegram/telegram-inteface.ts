@@ -87,12 +87,12 @@ export async function sendMessage(
  * Deletes a message
  * Bot must be an admin in a group (see other reqs: https://core.telegram.org/bots/api#deletemessage)
  * @param bot_key string
- * @param chat_id integer
+ * @param chat_id integer | string
  * @param msg_id integer
  */
 export async function deleteMessage(
   bot_key: string,
-  chat_id: number,
+  chat_id: number | string,
   msg_id: number,
 ) {
   return new Promise<TeleResponse>((resolve, reject) => {

@@ -12,6 +12,7 @@ import {
 } from '../firestore/firestore-interface'
 import {
   answerCallbackQuery,
+  deleteMessage,
   genInlineButtons,
   sendInvoice,
   sendPhoto,
@@ -72,6 +73,7 @@ async function _swipeCard(
   switch (direction) {
     case SwipeDirection.SELECT:
       await answerCallbackQuery(BOT_KEY, callbackId, 'Card Selected', false)
+      await deleteMessage(BOT_KEY, user.id, msg.message_id)
       user.state.stateStage = GiftStage.PAYMENT
       const selectedCardId = cards[userIndex]
       const selectedCard = await getCard(selectedCardId)
