@@ -1,5 +1,10 @@
 import admin, { ServiceAccount } from 'firebase-admin'
-import { ContentPage, TempMessage, User } from './firestore-types'
+import {
+  ContentPage,
+  GeneralStaticDocument,
+  GiftCard,
+  User,
+} from './firestore-types'
 
 const serviceAccount: ServiceAccount = {
   projectId: process.env.FIREBASE_PROJECT_ID,
@@ -15,9 +20,9 @@ admin.initializeApp({
 })
 
 const USER_DB = 'users'
-const TEMP_DB = 'temp_msgs'
 export const CONTENT_PAGE_DB = 'content_page'
 const STATICS_DB = 'statics'
+const GIFTCARDS_DB = 'gift_cards'
 
 // https://medium.com/swlh/using-firestore-with-typescript-65bd2a602945
 // Creates a hash of functions that generically sets types
@@ -34,9 +39,9 @@ const dataPoint = <T>(collectionPath: string) =>
 // Declare the types of Databases available
 const db = {
   users: dataPoint<User>(USER_DB),
-  tempMsgs: dataPoint<TempMessage>(TEMP_DB),
   contentPage: dataPoint<ContentPage>(CONTENT_PAGE_DB),
-  statics: dataPoint<any>(STATICS_DB),
+  statics: dataPoint<GeneralStaticDocument>(STATICS_DB),
+  giftCards: dataPoint<GiftCard>(GIFTCARDS_DB),
   default: admin.firestore(),
   admin: admin,
 }

@@ -12,6 +12,7 @@ import {
 } from '../firestore/firestore-types'
 import { aboutProtocol } from '../protocols/about-protocol'
 import { deregisterProtocol } from '../protocols/deregister-protocol'
+import { giftProtocol } from '../protocols/gift-protocol'
 import { profileProtocol } from '../protocols/profile-protocol'
 import { createNewState, createNewUser } from '../protocols/protocol-utils'
 import { signUpProtocol } from '../protocols/sign-up-protocol'
@@ -100,6 +101,8 @@ export async function processTeleCallback(callback: TeleCallbackQuery) {
       return tinderProtocol(user, msg, msg.message_id, callback.id, data)
     case Protocol.DEREGISTER:
       return deregisterProtocol(user, msg, callback.id, data)
+    case Protocol.GIFT:
+      return giftProtocol(user, msg, callback.id, data)
     default:
   }
 

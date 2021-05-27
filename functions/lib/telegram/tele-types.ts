@@ -223,6 +223,68 @@ export interface TelePhotoSize {
   file_size?: number
 }
 
+export interface TeleInvoice {
+  title: string
+  description: string
+  start_parameter: string
+  currency: string
+  total_amount: number
+}
+
+export interface TelePrice {
+  label: string
+  amount: number
+}
+
+export interface TeleShippingOption {
+  id: string
+  title: string
+  prices: TelePrice[]
+}
+
+export interface TeleShippingAddress {
+  country_code: string
+  state: string
+  city: string
+  street_line1: string
+  street_line2: string
+  post_code: string
+}
+
+export interface TeleOrderInfo {
+  name?: string
+  phone_number?: string
+  email?: string
+  address?: TeleShippingAddress
+}
+
+export interface TeleSuccessfulPayment {
+  currency: string
+  total_amount: number
+  invoice_payload: string
+  shipping_option_id: string
+  order_info?: TeleOrderInfo
+  telegram_payment_charge_id?: string
+  provider_payment_charge_id: string
+}
+
+export interface TeleShippingQuery {
+  id: string
+  from: TeleUser
+  invoice_payload: string
+  shipping_addresss: TeleShippingAddress
+}
+
+export interface TelePreCheckoutQuery {
+  id: string
+  from: TeleUser
+  currency: string
+  total_amount: number
+  invoice_payload: string
+  shipping_option_id: string
+  order_info: TeleOrderInfo
+}
+
 export const ERROR_CODES = {
   0: 'default',
   1: 'Missing Bot Key',

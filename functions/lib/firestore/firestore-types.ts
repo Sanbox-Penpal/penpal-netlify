@@ -28,15 +28,17 @@ export interface State {
   stateData: any
 }
 
-export interface TempMessage {
-  ref: string
-  msgs: string[]
-  processing: boolean
-}
-
 export interface ContentPage {
   admins: string[]
   allUsers: string[]
+  giftCards: string[]
+}
+
+export interface GiftCard {
+  url: string
+  title: string
+  description: string
+  left?: number
 }
 
 export enum Protocol {
@@ -88,9 +90,13 @@ export interface TinderStageStatics extends GeneralStaticDocument {
 
 export enum GiftStage {
   INITIALIZE = 'INITIALIZE',
+  SELECT_CARD = 'SELECT_CARD',
 }
 
-export interface GiftStageStatics extends GeneralStaticDocument {}
+export interface GiftStageStatics extends GeneralStaticDocument {
+  INITIALIZE: string
+  TEMPLATE: string
+}
 
 export enum DeregisterStage {
   INITIALIZE = 'INITIALIZE',

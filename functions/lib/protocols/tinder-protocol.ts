@@ -83,12 +83,12 @@ async function _swipeCallback(
         )
         return _sendRandomCard(msgs, user, msgId)
       }
-      const proceedBtn = genInlineButtons([['Gift a card!']], ['Start'])
+      const proceedBtn = genInlineButtons([['Gift a card!']], ['Init'])
       const selfMetadata: ProtocolMetadata = {
         protocol: Protocol.GIFT,
         stage: GiftStage.INITIALIZE,
         referencedUser: user.id,
-        data: likedUser.id,
+        data: [likedUser.id, likedUser.name, 0],
       }
       let msgTextSelf = fillUserFields(user, msgs.MATCH)
       msgTextSelf = embedMetadata(selfMetadata, msgTextSelf)
@@ -99,7 +99,7 @@ async function _swipeCallback(
         protocol: Protocol.GIFT,
         stage: GiftStage.INITIALIZE,
         referencedUser: likedUser.id,
-        data: user.id,
+        data: [user.id, user.name, 0],
       }
       let msgTextMatched = fillUserFields(likedUser, msgs.MATCH)
       msgTextMatched = embedMetadata(matchedMetadata, msgTextMatched)

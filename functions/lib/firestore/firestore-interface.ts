@@ -4,12 +4,12 @@ import {
   Protocol,
   SignUpStageStatics,
   State,
-  TempMessage,
   TinderStageStatics,
   User,
   UserStatus,
   GeneralStaticDocument,
   AboutStageStatics,
+  GiftStageStatics,
 } from './firestore-types'
 import { CONTENT_PAGE_DB, db } from './firestore-utils'
 
@@ -40,6 +40,7 @@ export const getStatics = {
   deregister: staticsConverter<DeregisterStageStatics>(Protocol.DEREGISTER),
   profile: staticsConverter<ProfileStageStatics>(Protocol.PROFILE),
   about: staticsConverter<AboutStageStatics>(Protocol.ABOUT),
+  gift: staticsConverter<GiftStageStatics>(Protocol.GIFT),
 }
 
 // <-- User Related Services -->
@@ -126,39 +127,33 @@ export async function clearUserState(userId: string) {
   return docRef.update({ state: null })
 }
 
-// Temp Messages
-export async function logTempMsg(tempMsg: TempMessage) {
-  const docRef = db.tempMsgs.doc(tempMsg.ref)
-  return docRef.set(tempMsg)
-}
+// // Temp Messages
+// export async function logTempMsg(tempMsg: TempMessage) {
+//   const docRef = db.tempMsgs.doc(tempMsg.ref)
+//   return docRef.set(tempMsg)
+// }
 
-export async function getTempMsg(ref: string) {
-  const snapshot = await db.tempMsgs.doc(ref).get()
+// export async function getTempMsg(ref: string) {
+//   const snapshot = await db.tempMsgs.doc(ref).get()
+//   return snapshot.exists ? snapshot.data() : null
+// }
+
+// export async function atomicGetTempMsg(ref: string) {
+//   const docRef = db.tempMsgs.doc(ref)
+//   await db.default.runTransaction(async (transaction) => {
+//     const snapshot = await transaction.get(docRef)
+//     if (snapshot.exists && snapshot.data().processing == false) {
+//       transaction.update(docRef, { processing: true })
+//       return snapshot.data()
+//     }
+//     return null
+//   })
+// }
+
+// Gift Cards
+export async function getCard(id: string) {
+  const snapshot = await db.giftCards.doc(id).get()
   return snapshot.exists ? snapshot.data() : null
-}
-
-export async function atomicGetTempMsg(ref: string) {
-  const docRef = db.tempMsgs.doc(ref)
-  await db.default.runTransaction(async (transaction) => {
-    const snapshot = await transaction.get(docRef)
-    if (snapshot.exists && snapshot.data().processing == false) {
-      transaction.update(docRef, { processing: true })
-      return snapshot.data()
-    }
-    return null
-  })
-}
-
-export async function freeTempMsg(ref: string) {
-  return db.tempMsgs.doc(ref).update({ processing: false })
-}
-
-export async function updateMsgs(ref: string, msgs: string[]) {
-  return db.tempMsgs.doc(ref).update({ msgs: msgs })
-}
-
-export async function clearTempMsg(ref: string) {
-  return db.tempMsgs.doc(ref).delete()
 }
 
 // Content Page
@@ -170,6 +165,11 @@ export async function getContentPage() {
 export async function getAdmins() {
   const contentPage = await getContentPage()
   return contentPage.admins
+}
+
+export async function getAllGiftCards() {
+  const contentPage = await getContentPage()
+  return contentPage.giftCards
 }
 
 export async function getAllUsers() {
