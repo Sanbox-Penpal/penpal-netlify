@@ -273,8 +273,8 @@ export interface TelePreCheckoutQuery {
   currency: string
   total_amount: number
   invoice_payload: string
-  shipping_option_id: string
-  order_info: TeleOrderInfo
+  shipping_option_id?: string
+  order_info?: TeleOrderInfo
 }
 
 // Alias of successful_payment
