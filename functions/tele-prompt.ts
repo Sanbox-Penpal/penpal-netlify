@@ -26,8 +26,10 @@ export async function handler(event, context) {
 async function processTelePrompt(prompt: TeleUpdate) {
   try {
     if (prompt.message) {
-      if (prompt.message.successful_payment)
+      if (prompt.message.successful_payment != null) {
+        console.log(prompt.message)
         return processTeleReceipt(prompt.message)
+      }
       return processTeleMsg(prompt.message)
     } else if (prompt.callback_query) {
       return processTeleCallback(prompt.callback_query)

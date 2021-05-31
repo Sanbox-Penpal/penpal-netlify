@@ -215,7 +215,10 @@ export async function processTeleReceipt(msg: TeleMessage) {
   textMsg = textMsg.replace('$gifterUsername', user.username)
   textMsg = textMsg.replace('$gifterName', user.name)
   textMsg = textMsg.replace('$cardName', giftCard.title)
-  textMsg = textMsg.replace('$price', `SGD $${receipt.total_amount}`)
+  textMsg = textMsg.replace(
+    '$price',
+    `SGD $${(receipt.total_amount / 100.0).toFixed(2)}`,
+  )
   textMsg = textMsg.replace('$gifteeAddress', giftee.address)
   textMsg = textMsg.replace(
     '$telePaymentId',
