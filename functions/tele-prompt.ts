@@ -26,15 +26,15 @@ export async function handler(event, context) {
 async function processTelePrompt(prompt: TeleUpdate) {
   try {
     if (prompt.message) {
-      if (prompt.message.successful_payment != null) {
-        console.log(prompt.message)
-        return processTeleReceipt(prompt.message)
+      if (prompt.message.successful_payment) {
+        await processTeleReceipt(prompt.message)
+        return
       }
-      return processTeleMsg(prompt.message)
+      await processTeleMsg(prompt.message)
     } else if (prompt.callback_query) {
-      return processTeleCallback(prompt.callback_query)
+      await processTeleCallback(prompt.callback_query)
     } else if (prompt.pre_checkout_query) {
-      return processTelePrecheckout(prompt.pre_checkout_query)
+      await processTelePrecheckout(prompt.pre_checkout_query)
     }
   } catch (e) {
     console.log(e)
