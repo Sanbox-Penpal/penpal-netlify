@@ -15,6 +15,7 @@ export interface TeleUpdate {
   message?: TeleMessage
   chat_member?: TeleMemberUpdate
   callback_query?: TeleCallbackQuery
+  pre_checkout_query?: TelePreCheckoutQuery
   // Below are not yet used and so not implemented
   /*
   edited_message?: TeleMessage
@@ -64,6 +65,7 @@ export interface TeleMessage {
   caption_entities?: [TeleMessageEntities]
   document?: TeleDocument
   photo?: [TelePhotoSize]
+  successful_payment?: TeleReceipt
 
   // Below are not yet used and so not implemented
   /*
@@ -258,16 +260,6 @@ export interface TeleOrderInfo {
   address?: TeleShippingAddress
 }
 
-export interface TeleSuccessfulPayment {
-  currency: string
-  total_amount: number
-  invoice_payload: string
-  shipping_option_id: string
-  order_info?: TeleOrderInfo
-  telegram_payment_charge_id?: string
-  provider_payment_charge_id: string
-}
-
 export interface TeleShippingQuery {
   id: string
   from: TeleUser
@@ -283,6 +275,17 @@ export interface TelePreCheckoutQuery {
   invoice_payload: string
   shipping_option_id: string
   order_info: TeleOrderInfo
+}
+
+// Alias of successful_payment
+export interface TeleReceipt {
+  currency: string
+  total_amount: number
+  invoice_payload: string
+  shipping_option_id?: string
+  order_info?: TeleOrderInfo
+  telegram_payment_charge_id: string
+  provider_payment_charge_id: string
 }
 
 export const ERROR_CODES = {

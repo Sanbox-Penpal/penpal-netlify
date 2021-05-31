@@ -1,6 +1,12 @@
 /* This js file is an extension to the multi-purpose telegram_interface js file
  * meant for this bot in particular */
-import { getStatics, getUser } from '../firestore/firestore-interface'
+import {
+  getAdmins,
+  getCard,
+  getStatics,
+  getUser,
+  updateUserState,
+} from '../firestore/firestore-interface'
 import {
   DeregisterStage,
   ProfileStage,
@@ -12,7 +18,10 @@ import {
 } from '../firestore/firestore-types'
 import { aboutProtocol } from '../protocols/about-protocol'
 import { deregisterProtocol } from '../protocols/deregister-protocol'
-import { giftProtocol } from '../protocols/gift-protocol'
+import {
+  giftProtocol,
+  PAYLOAD_DELIMETER as GIFTING_DELIMETER,
+} from '../protocols/gift-protocol'
 import { profileProtocol } from '../protocols/profile-protocol'
 import { createNewState, createNewUser } from '../protocols/protocol-utils'
 import { signUpProtocol } from '../protocols/sign-up-protocol'
@@ -22,6 +31,8 @@ import {
   TeleInlineKeyboard,
   TeleMessage,
   TeleMessageEntities,
+  TelePreCheckoutQuery,
+  TeleReceipt,
   TeleReplyKeyboard,
 } from './tele-types'
 
@@ -32,6 +43,7 @@ import {
   sendMessage,
   genInlineUrlButtons,
   extractMetadata,
+  answerPreCheckoutQuery,
 } from './telegram-inteface'
 const CALLBACK_DELIMETER = '<>'
 const BOT_KEY = process.env.TELE_BOT_KEY
@@ -179,6 +191,45 @@ async function _runCommand(htmlMsg: string, message: TeleMessage) {
   } else {
     return sendMsg(message.from.id, 'Unrecognized command')
   }
+}
+
+export async function processTelePrecheckout(query: TelePreCheckoutQuery) {
+  // Check Stock here
+  return answerPreCheckoutQuery(BOT_KEY, query.id, true)
+}
+
+export async function processTeleReceipt(msg: TeleMessage) {
+  const receipt = msg.successful_payment
+  const payloadArr = receipt.invoice_payload.split(GIFTING_DELIMETER)
+  const giftCardId = payloadArr[0]
+  const gifteeId = payloadArr[1]
+  const user = await getUser(msg.from.id.toString())
+  const giftee = await getUser(gifteeId)
+  const giftCard = await getCard(giftCardId)
+  const admins = await getAdmins()
+
+  let statics = await getStatics.gift
+  let textMsg = statics.ADMIN_RECEIPT
+  textMsg = textMsg.replace('$gifteeUsername', giftee.username)
+  textMsg = textMsg.replace('$gifteeName', giftee.name)
+  textMsg = textMsg.replace('$gifterUsername', user.username)
+  textMsg = textMsg.replace('$gifterName', user.name)
+  textMsg = textMsg.replace('$cardName', giftCard.title)
+  textMsg = textMsg.replace('$price', `SGD $${receipt.total_amount}`)
+  textMsg = textMsg.replace('$gifteeAddress', giftee.address)
+  textMsg = textMsg.replace(
+    '$telePaymentId',
+    receipt.telegram_payment_charge_id,
+  )
+  textMsg = textMsg.replace(
+    '$stripePaymentId',
+    receipt.provider_payment_charge_id,
+  )
+  for (var admin of admins) {
+    await sendMsg(admin, textMsg)
+  }
+  await sendMsg(user.id, 'Your payment has been received.')
+  return updateUserState(user.id, null)
 }
 
 // /register command bounce

@@ -98,6 +98,7 @@ export enum GiftStage {
 export interface GiftStageStatics extends GeneralStaticDocument {
   INITIALIZE: string
   TEMPLATE: string
+  ADMIN_RECEIPT: string
 }
 
 export enum DeregisterStage {

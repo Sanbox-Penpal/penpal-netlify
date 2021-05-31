@@ -23,6 +23,7 @@ import { TeleInvoice, TeleMessage, TelePrice } from '../telegram/tele-types'
 import { sendMsg } from '../telegram/telegram-extension'
 
 const BOT_KEY = process.env.TELE_BOT_KEY
+export const PAYLOAD_DELIMETER = '<>for<>'
 
 export async function giftProtocol(
   user: User,
@@ -36,6 +37,8 @@ export async function giftProtocol(
       return _initialize(msgs, user, msg, callbackId)
     case GiftStage.SELECT_CARD:
       return _swipeCard(msgs, user, msg, callbackData[0], callbackId)
+    case GiftStage.PAYMENT:
+      return
     default:
   }
 }
@@ -92,12 +95,13 @@ async function _swipeCard(
           amount: selectedCard.price * 100,
         },
       ]
+      await updateUserState(user.id, user.state)
       return sendInvoice(
         BOT_KEY,
         process.env.STRIPE_TOKEN,
         user.id,
         newInvoice,
-        `${selectedCardId}_for_${gifteeId}`,
+        `${selectedCardId}${PAYLOAD_DELIMETER}${gifteeId}`,
         priceBreakdown,
         selectedCard.url,
       )
