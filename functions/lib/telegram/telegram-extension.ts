@@ -195,7 +195,6 @@ async function _runCommand(htmlMsg: string, message: TeleMessage) {
 
 export async function processTelePrecheckout(query: TelePreCheckoutQuery) {
   // Check Stock here
-  console.log(query)
   return answerPreCheckoutQuery(BOT_KEY, query.id, true)
 }
 
