@@ -10,6 +10,8 @@ export async function aboutProtocol(user: TeleUser, type: AboutStage) {
       return sendMsg(user.id, msgs.ABOUT)
     case AboutStage.TERMS:
       return sendMsg(user.id, msgs.TERMS)
+    case AboutStage.SUPPORT:
+      return sendMsg(user.id, msgs.SUPPORT)
     default:
       return sendMsg(user.id, 'About Protocol Failed')
   }

@@ -136,11 +136,13 @@ export interface ProfileStageStatics extends GeneralStaticDocument {
 export enum AboutStage {
   ABOUT = 'ABOUT',
   TERMS = 'TERMS',
+  SUPPORT = 'SUPPORT',
 }
 
 export interface AboutStageStatics extends GeneralStaticDocument {
   ABOUT: string
   TERMS: string
+  SUPPORT: string
 }
 
 export enum AddressStage {

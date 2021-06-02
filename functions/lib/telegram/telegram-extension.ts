@@ -188,6 +188,8 @@ async function _runCommand(htmlMsg: string, message: TeleMessage) {
     return aboutProtocol(message.from, AboutStage.ABOUT)
   } else if (_identifyCommand('/terms', htmlMsg)) {
     return aboutProtocol(message.from, AboutStage.TERMS)
+  } else if (_identifyCommand('/support', htmlMsg)) {
+    return aboutProtocol(message.from, AboutStage.SUPPORT)
   } else if (_identifyCommand('/address', htmlMsg)) {
     let user = await getUser(message.from.id.toString())
     if (!user)
