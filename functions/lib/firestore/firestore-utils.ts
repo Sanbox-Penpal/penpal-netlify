@@ -7,12 +7,13 @@ import {
 } from './firestore-types'
 
 const serviceAccount: ServiceAccount = {
-  projectId: process.env.FIREBASE_PROJECT_ID,
+  projectId: 'penpal-community',
   privateKey: process.env.FIREBASE_PRIVATE_KEY.replace(
     new RegExp('\\\\n', 'g'),
     '\n',
   ),
-  clientEmail: process.env.FIREBASE_CLIENT_EMAIL,
+  clientEmail:
+    'firebase-adminsdk-hm709@penpal-community.iam.gserviceaccount.com',
 }
 // Initialize Firestore Instance
 admin.initializeApp({

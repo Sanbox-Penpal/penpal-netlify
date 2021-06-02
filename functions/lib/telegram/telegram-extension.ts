@@ -51,6 +51,7 @@ import {
 const CALLBACK_DELIMETER = '<>'
 const BOT_KEY = process.env.TELE_BOT_KEY
 const BOT_LINK = 'https://t.me/sanbox_penpal_tbot'
+const GSHEET_ID = '1_AM9CJRzXWmBBet0NYL8SunyZpizWxNZYmXc3buGSpk'
 
 export async function processTeleMsg(message: TeleMessage) {
   let textMsgHtml = formatTeleTextToHtml(message.text, message.entities)
@@ -265,7 +266,7 @@ export async function processTeleReceipt(msg: TeleMessage) {
       ],
     ],
     'A:H',
-    process.env.GSHEET_ID,
+    GSHEET_ID,
     'Raw',
   )
   await sendMsg(user.id, 'Your payment has been received.')

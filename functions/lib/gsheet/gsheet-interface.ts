@@ -1,6 +1,7 @@
 import { google, sheets_v4 } from 'googleapis'
 
-const CLIENT_EMAIL = process.env.GSHEET_CLIENT_EMAIL
+const CLIENT_EMAIL =
+  'sanbox-penpal-community@sabox-penpal-community.iam.gserviceaccount.com'
 let PRIVATE_KEY = process.env.GSHEET_PRIVATE_KEY || 'No Private Key Found'
 PRIVATE_KEY = PRIVATE_KEY.replace(new RegExp('\\\\n', 'g'), '\n')
 
