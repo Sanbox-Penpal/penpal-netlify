@@ -18,6 +18,7 @@ import {
   User,
   UserStatus,
 } from '../firestore/firestore-types'
+import { appendToSheet } from '../gsheet/gsheet-interface'
 import { aboutProtocol } from '../protocols/about-protocol'
 import { addressProtocol } from '../protocols/address-protocol'
 import { deregisterProtocol } from '../protocols/deregister-protocol'
@@ -250,6 +251,23 @@ export async function processTeleReceipt(msg: TeleMessage) {
   for (var admin of admins) {
     await sendMsg(admin, textMsg)
   }
+  await appendToSheet(
+    [
+      [
+        null,
+        user.name,
+        `@${user.username}`,
+        giftee.name,
+        `@${giftee.username}`,
+        giftee.address,
+        `${giftCard.title}\n - ${giftCardId}`,
+        (receipt.total_amount / 100.0).toFixed(2),
+      ],
+    ],
+    'A:H',
+    process.env.GSHEET_ID,
+    'Raw',
+  )
   await sendMsg(user.id, 'Your payment has been received.')
   return updateUserState(user.id, null)
 }
