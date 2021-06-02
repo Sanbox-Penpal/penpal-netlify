@@ -133,8 +133,14 @@ export interface ProfileStageStatics extends GeneralStaticDocument {
   START_TINDER: string
 }
 
+export enum AboutStage {
+  ABOUT = 'ABOUT',
+  TERMS = 'TERMS',
+}
+
 export interface AboutStageStatics extends GeneralStaticDocument {
   ABOUT: string
+  TERMS: string
 }
 
 export enum AddressStage {

@@ -8,6 +8,7 @@ import {
   updateUserState,
 } from '../firestore/firestore-interface'
 import {
+  AboutStage,
   AddressStage,
   DeregisterStage,
   ProfileStage,
@@ -184,7 +185,9 @@ async function _runCommand(htmlMsg: string, message: TeleMessage) {
     return deregisterProtocol(user, message)
     // About
   } else if (_identifyCommand('/about', htmlMsg)) {
-    return aboutProtocol(message.from)
+    return aboutProtocol(message.from, AboutStage.ABOUT)
+  } else if (_identifyCommand('/terms', htmlMsg)) {
+    return aboutProtocol(message.from, AboutStage.TERMS)
   } else if (_identifyCommand('/address', htmlMsg)) {
     let user = await getUser(message.from.id.toString())
     if (!user)
