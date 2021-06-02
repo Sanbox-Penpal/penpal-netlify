@@ -10,6 +10,7 @@ import {
   GeneralStaticDocument,
   AboutStageStatics,
   GiftStageStatics,
+  AddressStageStatics,
 } from './firestore-types'
 import { CONTENT_PAGE_DB, db } from './firestore-utils'
 
@@ -41,6 +42,7 @@ export const getStatics = {
   profile: staticsConverter<ProfileStageStatics>(Protocol.PROFILE),
   about: staticsConverter<AboutStageStatics>(Protocol.ABOUT),
   gift: staticsConverter<GiftStageStatics>(Protocol.GIFT),
+  address: staticsConverter<AddressStageStatics>(Protocol.ADDRESS),
 }
 
 // <-- User Related Services -->

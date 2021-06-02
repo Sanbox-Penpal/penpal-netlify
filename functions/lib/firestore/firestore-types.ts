@@ -49,6 +49,7 @@ export enum Protocol {
   DEREGISTER = 'Deregister',
   PROFILE = 'Profile',
   ABOUT = 'About',
+  ADDRESS = 'Address',
 }
 
 export type GeneralStaticDocument = { [key: string]: string | string[] }
@@ -57,6 +58,7 @@ export enum SignUpStage {
   PDPA = 'PDPA',
   PDPA_CALLBACK = 'PDPA Verification',
   PROGRAMMES = 'Adding Programmes',
+  VERIFY_ADDRESS = 'Verify Address',
   VERIFICATION_REQUEST = 'Verification Request',
   VERIFICATION_RESPONSE = 'Verification Response',
   APPROVING = 'Approval',
@@ -67,6 +69,8 @@ export interface SignUpStageStatics extends GeneralStaticDocument {
   PDPA_DECLINED: string
   PROGRAMMES: string[]
   ADD_PROGRAMMES: string
+  REQUEST_ADDRESS: string
+  VERIFY_ADDRESS: string
   VERIFICATION: string
   VERIFICATION_RECEIVED: string
   VERIFICATION_APPROVED: string
@@ -131,4 +135,14 @@ export interface ProfileStageStatics extends GeneralStaticDocument {
 
 export interface AboutStageStatics extends GeneralStaticDocument {
   ABOUT: string
+}
+
+export enum AddressStage {
+  INITIALIZE = 'INITIALIZE',
+  VERIFY_ADDRESS = 'Verifying Address',
+}
+
+export interface AddressStageStatics extends GeneralStaticDocument {
+  INITIALIZE: string
+  VERIFY_ADDRESS: string
 }

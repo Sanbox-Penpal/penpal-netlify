@@ -8,6 +8,7 @@ import {
   updateUserState,
 } from '../firestore/firestore-interface'
 import {
+  AddressStage,
   DeregisterStage,
   ProfileStage,
   Protocol,
@@ -17,6 +18,7 @@ import {
   UserStatus,
 } from '../firestore/firestore-types'
 import { aboutProtocol } from '../protocols/about-protocol'
+import { addressProtocol } from '../protocols/address-protocol'
 import { deregisterProtocol } from '../protocols/deregister-protocol'
 import {
   giftProtocol,
@@ -32,7 +34,6 @@ import {
   TeleMessage,
   TeleMessageEntities,
   TelePreCheckoutQuery,
-  TeleReceipt,
   TeleReplyKeyboard,
 } from './tele-types'
 
@@ -70,6 +71,8 @@ export async function processTeleMsg(message: TeleMessage) {
       return profileProtocol(user, message)
     case Protocol.TINDER:
       break
+    case Protocol.ADDRESS:
+      return addressProtocol(user, message)
     default:
   }
 }
@@ -116,6 +119,8 @@ export async function processTeleCallback(callback: TeleCallbackQuery) {
       return deregisterProtocol(user, msg, callback.id, data)
     case Protocol.GIFT:
       return giftProtocol(user, msg, callback.id, data)
+    case Protocol.ADDRESS:
+      return addressProtocol(user, msg, callback.id)
     default:
   }
 
@@ -161,7 +166,10 @@ async function _runCommand(htmlMsg: string, message: TeleMessage) {
     user.state = createNewState(Protocol.PROFILE, ProfileStage.INITIALIZE)
     return profileProtocol(user, message)
     // -- Tinder
-  } else if (_identifyCommand('/find_penpal', htmlMsg)) {
+  } else if (
+    _identifyCommand('/find_penpal', htmlMsg) ||
+    _identifyCommand('/swipe', htmlMsg)
+  ) {
     let user = await getUser(message.from.id.toString())
     if (!user || user.status != UserStatus.APPROVED)
       return sendMsg(message.from.id, 'You are not registered with Sanbox yet.')
@@ -177,6 +185,12 @@ async function _runCommand(htmlMsg: string, message: TeleMessage) {
     // About
   } else if (_identifyCommand('/about', htmlMsg)) {
     return aboutProtocol(message.from)
+  } else if (_identifyCommand('/address', htmlMsg)) {
+    let user = await getUser(message.from.id.toString())
+    if (!user)
+      return sendMsg(message.from.id, 'You are not registered with Sanbox yet.')
+    user.state = createNewState(Protocol.ADDRESS, AddressStage.INITIALIZE)
+    return addressProtocol(user, message)
     //
   } else if (_identifyCommand('/identify', htmlMsg)) {
     // Identifying chat Id

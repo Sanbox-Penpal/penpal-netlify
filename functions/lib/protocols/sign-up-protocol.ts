@@ -60,6 +60,9 @@ export async function signUpProtocol(
         callbackId,
         callbackData,
       )
+    case SignUpStage.VERIFY_ADDRESS:
+      if (callbackId) return _verifyAddressCallback(msgs, user, msgId, msgText)
+      return _addressReply(msgs, user, msg)
     case SignUpStage.VERIFICATION_REQUEST:
       return _verificationReply(msgs, user, msg)
     case SignUpStage.VERIFICATION_RESPONSE:
@@ -114,9 +117,9 @@ async function _addProgrammesCallback(
 
   if (selectedProgramme == 'Done') {
     await updateMessage(BOT_KEY, user.id, msgId, msgText)
-    user.state.stateStage = SignUpStage.VERIFICATION_REQUEST
+    user.state.stateStage = SignUpStage.VERIFY_ADDRESS
     await updateUserState(user.id, user.state)
-    return sendMsg(user.id, msgs.VERIFICATION)
+    return sendMsg(user.id, msgs.REQUEST_ADDRESS)
   }
 
   if (selectedProgramme == 'Clear') {
@@ -149,6 +152,37 @@ async function _addProgrammesCallback(
     programmes.map((val, index) => index.toString()),
   )
   return updateMessage(BOT_KEY, user.id, msgId, msgText, btns)
+}
+
+async function _verifyAddressCallback(
+  msgs: SignUpStageStatics,
+  user: User,
+  msgId: number,
+  msgText: string,
+) {
+  await updateMessage(BOT_KEY, user.id, msgId, msgText) // Remove button
+  user.state.stateStage = SignUpStage.VERIFICATION_REQUEST
+  user.state.stateData = null
+  await updateUser(user.id, user)
+  return sendMsg(user.id, msgs.VERIFICATION)
+}
+
+async function _addressReply(
+  msgs: SignUpStageStatics,
+  user: User,
+  msg: TeleMessage,
+) {
+  const btns = genInlineButtons([['Verify']], ['Verify'])
+  let textMsg = msgs.VERIFY_ADDRESS
+  user.address = msg.text
+  textMsg = textMsg.replace('$address', user.address)
+  if (!user.state.stateData) {
+    const sentMsg = await sendMsg(user.id, textMsg, btns)
+    user.state.stateData = sentMsg.message_id
+    return updateUser(user.id, user)
+  }
+  await updateUser(user.id, user)
+  return updateMessage(BOT_KEY, user.id, user.state.stateData, textMsg, btns)
 }
 
 async function _verificationReply(
