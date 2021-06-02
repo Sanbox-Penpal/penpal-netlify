@@ -32,7 +32,7 @@ I use eslint/prettier so please also use it.
 
 ## Technologies/Frameworks/Services 👨‍💻
 
-The project is currently deployed on **Netlify**, with **Typescript** as the main programming language.
+The project is currently deployed on **Netlify**, with **Typescript** as the main programming language. Note that becayse Netlify/AWS Lambda is used, the length of the environment variables allowed is severely limited (max 4kb. but in reality probably about 3.5k).
 
 For database/data storage, we've used **Firestore** as it was free but also because it allows non-coders to easily modify most of the static content present and manage the data whenever necessary.
 
